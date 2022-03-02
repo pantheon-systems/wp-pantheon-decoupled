@@ -1,0 +1,14 @@
+{
+    "name": "pantheon-systems/pantheon-decoupled",
+    "description": "Configuration necessary for hosting Decoupled WordPress sites on Pantheon.",
+    "require": {
+        "wpackagist-plugin/wp-graphql": "^1.0"
+    },
+    "license": "GPLv3",
+    "authors": [
+        {
+            "name": "Brian Perry",
+            "email": "brian.perry@pantheon.io"
+        }
+    ]
+}
