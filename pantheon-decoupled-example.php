@@ -58,6 +58,9 @@ function pantheon_decoupled_example_menu() {
 		'menu-item-classes' => 'example_post_with_image',
 		'menu-item-url' => home_url( '/example-post-with-image/' ),
 		'menu-item-status' => 'publish'));
+  $menu_locations = get_nav_menu_locations();
+  $menu_locations['footer'] = $menu_id;
+  set_theme_mod( 'nav_menu_locations', $menu_locations );
 }
 
 /**
