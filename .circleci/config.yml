@@ -1,0 +1,25 @@
+version: 2.1
+
+jobs:
+  trigger-main-pipeline:
+    docker:
+      - image: cimg/base:2021.11
+    resource_class: small
+    steps:
+      - run:
+          name: Trigger decoupled-wordpress pipeline
+          command: |
+            curl --request POST \
+              --url https://circleci.com/api/v2/project/gh/pantheon-systems/decoupled-wordpress/pipeline \
+              --header "Circle-Token: $CIRCLECI_API_KEY" \
+              --header "content-type: application/json" \
+              --data '{"branch":"master"}'
+
+workflows:
+  trigger-decoupled-wordpress:
+    jobs:
+      - trigger-main-pipeline:
+          filters:
+            branches:
+              only:
+                - main
