@@ -5,7 +5,7 @@
   "require": {
     "wpackagist-plugin/wp-graphql": "^1.0"
   },
-  "license": "GPLv3",
+  "license": "GPLv2",
   "authors": [
     {
       "name": "Brian Perry",
