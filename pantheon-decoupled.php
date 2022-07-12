@@ -12,12 +12,13 @@
  * @package         Pantheon_Decoupled
  */
 
-register_activation_hook( __FILE__, 'pantheon_decoupled_enable_deps' );
+require_once(ABSPATH . 'wp-admin/includes/plugin.php');
 
 function pantheon_decoupled_enable_deps() {
   activate_plugin( 'pantheon-decoupled/pantheon-decoupled-example.php' );
   set_transient('permalinks_customized', false);
   activate_plugin( 'wp-graphql/wp-graphql.php' );
+  pantheon_decoupled_change_permalinks();
 }
 
 function pantheon_decoupled_change_permalinks() {
@@ -29,4 +30,4 @@ function pantheon_decoupled_change_permalinks() {
 		set_transient('permalinks_customized', true);
 	}
 }
-add_action('init', 'pantheon_decoupled_change_permalinks');
+add_action('init', 'pantheon_decoupled_enable_deps');

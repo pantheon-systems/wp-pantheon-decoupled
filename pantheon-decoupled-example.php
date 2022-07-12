@@ -12,39 +12,41 @@
  * @package         Pantheon_Decoupled_Example
  */
 
+require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+
 /**
  * Create a post when activating the plugin.
  */
 function pantheon_decoupled_example_create_post() {
-    $image_url = dirname(__FILE__) . '/pizza.jpeg';
-    $upload_dir = wp_upload_dir();
-    $image_data = file_get_contents($image_url);
-    $filename = basename($image_url);
-    if (wp_mkdir_p($upload_dir['path'])) {
-        $file = $upload_dir['path'] . '/' . $filename;
-    } else {
-        $file = $upload_dir['basedir'] . '/' . $filename;
-    }
-    file_put_contents($file, $image_data);
-    $wp_filetype = wp_check_filetype($filename, null);
-    $attachment = array(
-        'post_mime_type' => $wp_filetype['type'],
-        'post_title' => sanitize_file_name($filename),
-        'post_content' => '',
-        'post_status' => 'inherit'
-    );
-    $attach_id = wp_insert_attachment($attachment, $file);
-    require_once(ABSPATH . 'wp-admin/includes/image.php');
-    $attach_data = wp_generate_attachment_metadata($attach_id, $file);
-    wp_update_attachment_metadata($attach_id, $attach_data);
+	$image_url = dirname(__FILE__) . '/pizza.jpeg';
+	$upload_dir = wp_upload_dir();
+	$image_data = file_get_contents($image_url);
+	$filename = basename($image_url);
+	if (wp_mkdir_p($upload_dir['path'])) {
+		$file = $upload_dir['path'] . '/' . $filename;
+	} else {
+		$file = $upload_dir['basedir'] . '/' . $filename;
+	}
+	file_put_contents($file, $image_data);
+	$wp_filetype = wp_check_filetype($filename, null);
+	$attachment = array(
+		'post_mime_type' => $wp_filetype['type'],
+		'post_title' => sanitize_file_name($filename),
+		'post_content' => '',
+		'post_status' => 'inherit'
+	);
+	$attach_id = wp_insert_attachment($attachment, $file);
+	require_once(ABSPATH . 'wp-admin/includes/image.php');
+	$attach_data = wp_generate_attachment_metadata($attach_id, $file);
+	wp_update_attachment_metadata($attach_id, $attach_data);
 
-    $example_post = [
-        'post_title' => 'Example Post with Image',
-        'post_content' => "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        'post_status' => 'publish'
-    ];
-    $post_id = wp_insert_post($example_post);
-    set_post_thumbnail($post_id, $attach_id);
+	$example_post = [
+		'post_title' => 'Example Post with Image',
+		'post_content' => "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+		'post_status' => 'publish'
+	];
+	$post_id = wp_insert_post($example_post);
+	set_post_thumbnail($post_id, $attach_id);
 }
 
 /**
@@ -58,16 +60,21 @@ function pantheon_decoupled_example_menu() {
 		'menu-item-classes' => 'example_post_with_image',
 		'menu-item-url' => home_url( '/example-post-with-image/' ),
 		'menu-item-status' => 'publish'));
-  $menu_locations = get_nav_menu_locations();
-  $menu_locations['footer'] = $menu_id;
-  set_theme_mod( 'nav_menu_locations', $menu_locations );
+	$menu_locations = get_nav_menu_locations();
+	$menu_locations['footer'] = $menu_id;
+	set_theme_mod( 'nav_menu_locations', $menu_locations );
 }
 
 /**
  * Activate the plugin.
  */
 function pantheon_decoupled_example_activate() {
-	pantheon_decoupled_example_create_post();
-	pantheon_decoupled_example_menu();
+	if ( !get_transient('pantheon_decoupled_example_created') ) {
+		pantheon_decoupled_example_create_post();
+		pantheon_decoupled_example_menu();
+		set_transient('pantheon_decoupled_example_created', true);
+	} else {
+		return;
+	}
 }
-register_activation_hook(__FILE__, 'pantheon_decoupled_example_activate');
+add_action('init', 'pantheon_decoupled_example_activate');
