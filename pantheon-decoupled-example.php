@@ -73,7 +73,6 @@ function pantheon_decoupled_example_activate() {
 		pantheon_decoupled_example_create_post();
 		pantheon_decoupled_example_menu();
 		set_transient('pantheon_decoupled_example_created', true);
-		print_r(get_transient('pantheon_decoupled_example_created'));exit();
 	} else {
 		return;
 	}
