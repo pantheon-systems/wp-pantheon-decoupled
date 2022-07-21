@@ -15,10 +15,11 @@
 require_once(ABSPATH . 'wp-admin/includes/plugin.php');
 
 function pantheon_decoupled_enable_deps() {
-  activate_plugin( 'pantheon-decoupled/pantheon-decoupled-example.php' );
-  set_transient('permalinks_customized', false);
-  activate_plugin( 'wp-graphql/wp-graphql.php' );
-  pantheon_decoupled_change_permalinks();
+	activate_plugin('pantheon-decoupled-auth-example/pantheon-decoupled-auth-example.php');
+	activate_plugin( 'pantheon-decoupled/pantheon-decoupled-example.php' );
+	set_transient('permalinks_customized', false);
+	activate_plugin( 'wp-graphql/wp-graphql.php' );
+	pantheon_decoupled_change_permalinks();
 }
 
 function pantheon_decoupled_change_permalinks() {
