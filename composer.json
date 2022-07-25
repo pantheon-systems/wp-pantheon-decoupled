@@ -2,8 +2,15 @@
   "name": "pantheon-systems/pantheon-decoupled",
   "description": "Configuration necessary for hosting Decoupled WordPress sites on Pantheon.",
   "type": "wordpress-muplugin",
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/pantheon-systems/wp-pantheon-decoupled-auth-example.git"
+    }
+  ],
   "require": {
-    "wpackagist-plugin/wp-graphql": "^1.0"
+    "wpackagist-plugin/wp-graphql": "^1.0",
+    "pantheon-systems/pantheon-decoupled-auth-example": "dev-main"
   },
   "license": "GPLv2",
   "authors": [
