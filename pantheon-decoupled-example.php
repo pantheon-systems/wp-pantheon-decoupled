@@ -13,6 +13,7 @@
  */
 
 require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+require_once(ABSPATH . 'wp-admin/includes/post.php');
 
 /**
  * Create a post when activating the plugin.
@@ -71,10 +72,10 @@ function pantheon_decoupled_example_menu() {
  * Activate the plugin.
  */
 function pantheon_decoupled_example_activate() {
-	if ( !get_transient('pantheon_decoupled_example_created') ) {
+	if ( !get_transient('pantheon_decoupled_example_created') && !post_exists("Example Post with Image") ) {
 		pantheon_decoupled_example_create_post();
 	}
-	if ( !get_transient('pantheon_decoupled_example_menu_created') ) {
+	if ( !get_transient('pantheon_decoupled_example_menu_created')) {
 		pantheon_decoupled_example_menu();
 	}
 }
