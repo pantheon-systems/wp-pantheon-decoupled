@@ -4,13 +4,14 @@
   "type": "wordpress-muplugin",
   "repositories": [
     {
-      "type": "vcs",
-      "url": "https://github.com/pantheon-systems/wp-pantheon-decoupled-auth-example.git"
+      "type": "composer",
+      "url": "https://wpackagist.org",
+      "only": ["wpackagist-plugin/*", "wpackagist-theme/*"]
     }
   ],
   "require": {
     "wpackagist-plugin/wp-graphql": "^1.0",
-    "pantheon-systems/pantheon-decoupled-auth-example": "dev-main"
+    "pantheon-systems/pantheon-decoupled-auth-example": "^1.0"
   },
   "license": "GPLv2",
   "authors": [
