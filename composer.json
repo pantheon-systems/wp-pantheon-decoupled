@@ -11,9 +11,10 @@
   ],
   "require": {
     "wpackagist-plugin/wp-graphql": "^1.0",
-    "pantheon-systems/pantheon-decoupled-auth-example": "^1.0"
+    "pantheon-systems/pantheon-decoupled-auth-example": "^1.0",
+    "pantheon-systems/decoupled-preview": "^1.0"
   },
-  "license": "GPLv2",
+  "license": "GPL-2.0-or-later",
   "authors": [
     {
       "name": "Brian Perry",
