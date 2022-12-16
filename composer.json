@@ -14,7 +14,7 @@
     "pantheon-systems/pantheon-decoupled-auth-example": "^1.0",
     "pantheon-systems/wp-decoupled-preview": "^1.0"
   },
-  "license": "GPLv2",
+  "license": "GPL-2.0-or-later",
   "authors": [
     {
       "name": "Brian Perry",
