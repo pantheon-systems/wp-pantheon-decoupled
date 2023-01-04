@@ -18,18 +18,17 @@ function pantheon_decoupled_enable_deps() {
 	activate_plugin('pantheon-decoupled-auth-example/pantheon-decoupled-auth-example.php');
 	activate_plugin( 'pantheon-decoupled/pantheon-decoupled-example.php' );
 	activate_plugin( 'decoupled-preview/wp-decoupled-preview.php' );
-	set_transient('permalinks_customized', false);
 	activate_plugin( 'wp-graphql/wp-graphql.php' );
-	pantheon_decoupled_change_permalinks();
+	if ( !get_transient('permalinks_customized') ) {
+		pantheon_decoupled_change_permalinks();
+	}
 }
 
 function pantheon_decoupled_change_permalinks() {
 	global $wp_rewrite;
-	if ( !get_transient('permalinks_customized') ) {
-		$wp_rewrite->set_permalink_structure('/%postname%/');
-		update_option( "rewrite_rules", FALSE );
-		$wp_rewrite->flush_rules( true );
-		set_transient('permalinks_customized', true);
-	}
+	$wp_rewrite->set_permalink_structure('/%postname%/');
+	update_option( "rewrite_rules", FALSE );
+	$wp_rewrite->flush_rules( true );
+	set_transient('permalinks_customized', true);
 }
 add_action('init', 'pantheon_decoupled_enable_deps');
