@@ -72,11 +72,13 @@ function pantheon_decoupled_example_menu() {
  * Activate the plugin.
  */
 function pantheon_decoupled_example_activate() {
-	if ( !get_transient('pantheon_decoupled_example_created') && !post_exists("Example Post with Image") ) {
-		pantheon_decoupled_example_create_post();
-	}
-	if ( !get_transient('pantheon_decoupled_example_menu_created')) {
-		pantheon_decoupled_example_menu();
+	if ( !post_exists( "Example Post with Image" ) ) {
+		if ( !get_transient( 'pantheon_decoupled_example_created' ) ) {
+			pantheon_decoupled_example_create_post();
+		}
+		if ( !get_transient( 'pantheon_decoupled_example_menu_created' ) ) {
+			pantheon_decoupled_example_menu();
+		}
 	}
 }
-add_action('init', 'pantheon_decoupled_example_activate');
+add_action( 'init', 'pantheon_decoupled_example_activate' );
