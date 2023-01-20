@@ -11,6 +11,7 @@
   ],
   "require": {
     "wpackagist-plugin/wp-graphql": "^1.0",
+    "wpackagist-plugin/pantheon-advanced-page-cache": "*",
     "pantheon-systems/pantheon-decoupled-auth-example": "^1.0",
     "pantheon-systems/decoupled-preview": "dev-main"
   },
