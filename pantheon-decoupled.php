@@ -20,8 +20,12 @@ function pantheon_decoupled_enable_deps() {
 	activate_plugin( 'decoupled-preview/wp-decoupled-preview.php' );
 	activate_plugin( 'pantheon-advanced-page-cache/pantheon-advanced-page-cache.php' );
 	activate_plugin( 'wp-graphql/wp-graphql.php' );
+	activate_plugin( 'wp-graphql-smart-cache/wp-graphql-smart-cache.php' );
 	if ( !get_transient('permalinks_customized') ) {
 		pantheon_decoupled_change_permalinks();
+	}
+	if ( !get_transient( 'graphql_smart_object_cache' ) ) {
+		pantheon_decoupled_graphql_smart_object_cache();
 	}
 }
 
@@ -32,4 +36,10 @@ function pantheon_decoupled_change_permalinks() {
 	$wp_rewrite->flush_rules( true );
 	set_transient('permalinks_customized', true);
 }
+
+function pantheon_decoupled_graphql_smart_object_cache() {
+	update_option( 'graphql_cache_section', [ 'global_max_age' => 600, 'cache_toggle' => 'on' ] );
+	set_transient( 'graphql_smart_object_cache', true );
+}
+
 add_action('init', 'pantheon_decoupled_enable_deps');
