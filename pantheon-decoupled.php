@@ -38,7 +38,7 @@ function pantheon_decoupled_change_permalinks() {
 }
 
 function pantheon_decoupled_graphql_smart_object_cache() {
-	update_option( 'graphql_cache_section', [ 'global_max_age' => 600, 'cache_toggle' => 'on' ] );
+	update_option( 'graphql_cache_section', [ 'global_max_age' => 600 ] );
 	set_transient( 'graphql_smart_object_cache', true );
 }
 
