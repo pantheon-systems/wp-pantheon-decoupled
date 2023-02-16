@@ -23,10 +23,5 @@
       "name": "Brian Perry",
       "email": "brian.perry@pantheon.io"
     }
-  ],
-  "config": {
-    "allow-plugins": {
-      "composer/installers": true
-    }
-  }
+  ]
 }
