@@ -15,7 +15,7 @@
     "wpackagist-plugin/pantheon-advanced-page-cache": "*",
     "pantheon-systems/pantheon-decoupled-auth-example": "^1.0",
     "pantheon-systems/decoupled-preview": "^0.2",
-    "wpackagist-plugin/wp-webhooks": "^3.3"
+    "wpackagist-plugin/wp-webhooks": "^3.3.1"
   },
   "license": "GPL-2.0-or-later",
   "authors": [
@@ -23,5 +23,12 @@
       "name": "Brian Perry",
       "email": "brian.perry@pantheon.io"
     }
-  ]
+  ],
+  "extra": {
+    "patches": {
+      "wpackagist-plugin/wp-webhooks": {
+        "Disable Custom Port": "disable-custom-port.patch"
+      }
+    }
+  }
 }

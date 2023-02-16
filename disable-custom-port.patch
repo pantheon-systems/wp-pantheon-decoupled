@@ -1,0 +1,22 @@
+diff --git a/core/includes/classes/class-wp-webhooks-pro-helpers.php b/core/includes/classes/class-wp-webhooks-pro-helpers.php
+index 84b9036..8beb47e 100644
+--- a/core/includes/classes/class-wp-webhooks-pro-helpers.php
++++ b/core/includes/classes/class-wp-webhooks-pro-helpers.php
+@@ -330,17 +330,6 @@ class WP_Webhooks_Pro_Helpers {
+
+ 		$host_part = $_SERVER['HTTP_HOST'];
+
+-		//Support custom ports (since 4.2.0)
+-		$port     = intval( $_SERVER['SERVER_PORT'] );
+-		if( ! empty( $port ) ){
+-
+-			//strip port
+-			$host_part = strtok( $host_part, ':' );
+-
+-			$port = ( $port == 80 || $port == 443 ) ? '' : ':' . $port;
+-			$host_part .= $port;
+-		}
+-
+ 		$current_url .= sanitize_text_field( $host_part ) . sanitize_text_field( $_SERVER['REQUEST_URI'] );
+
+ 	    if( ! $with_args ){
