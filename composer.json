@@ -14,7 +14,7 @@
     "wp-graphql/wp-graphql-smart-cache": "^1.0",
     "wpackagist-plugin/pantheon-advanced-page-cache": "*",
     "pantheon-systems/pantheon-decoupled-auth-example": "^1.0",
-    "pantheon-systems/decoupled-preview": "dev-main",
+    "pantheon-systems/decoupled-preview": "^0.2",
     "wpackagist-plugin/wp-webhooks": "^3.3"
   },
   "license": "GPL-2.0-or-later",
