@@ -27,7 +27,7 @@
   "extra": {
     "patches": {
       "wpackagist-plugin/wp-webhooks": {
-        "Disable Custom Port": "disable-custom-port.patch"
+        "Disable Custom Port": "https://raw.githubusercontent.com/pantheon-systems/wp-pantheon-decoupled/main/disable-custom-port.patch"
       }
     }
   }
