@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "wpackagist-plugin/wp-graphql": "^1.0",
+    "wpackagist-plugin/wp-graphql": "1.13.10",
     "wp-graphql/wp-graphql-smart-cache": "^1.0",
     "wpackagist-plugin/pantheon-advanced-page-cache": "*",
     "pantheon-systems/pantheon-decoupled-auth-example": "^1.0",
