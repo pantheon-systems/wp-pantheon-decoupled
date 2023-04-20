@@ -31,10 +31,5 @@
         "Disable Custom Port": "https://raw.githubusercontent.com/pantheon-systems/wp-pantheon-decoupled/main/disable-custom-port.patch"
       }
     }
-  },
-  "config": {
-    "allow-plugins": {
-      "composer/installers": true
-    }
   }
 }
