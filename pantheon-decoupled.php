@@ -15,12 +15,13 @@
 require_once(ABSPATH . 'wp-admin/includes/plugin.php');
 
 function pantheon_decoupled_enable_deps() {
-	activate_plugin('pantheon-decoupled-auth-example/pantheon-decoupled-auth-example.php');
+	activate_plugin( 'pantheon-decoupled-auth-example/pantheon-decoupled-auth-example.php' );
 	activate_plugin( 'pantheon-decoupled/pantheon-decoupled-example.php' );
 	activate_plugin( 'decoupled-preview/wp-decoupled-preview.php' );
 	activate_plugin( 'pantheon-advanced-page-cache/pantheon-advanced-page-cache.php' );
 	activate_plugin( 'wp-graphql/wp-graphql.php' );
 	activate_plugin( 'wp-graphql-smart-cache/wp-graphql-smart-cache.php' );
+	activate_plugin( 'wp-gatsby/wp-gatsby.php' );
 	if ( !get_transient('permalinks_customized') ) {
 		pantheon_decoupled_change_permalinks();
 	}
