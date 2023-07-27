@@ -22,6 +22,7 @@ function pantheon_decoupled_enable_deps() {
 	activate_plugin( 'wp-graphql/wp-graphql.php' );
 	activate_plugin( 'wp-graphql-smart-cache/wp-graphql-smart-cache.php' );
 	activate_plugin( 'wp-gatsby/wp-gatsby.php' );
+  activate_plugin( 'wp-force-login/wp-force-login.php' );
 	if ( !get_transient('permalinks_customized') ) {
 		pantheon_decoupled_change_permalinks();
 	}
