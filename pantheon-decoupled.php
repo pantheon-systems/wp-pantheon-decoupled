@@ -44,4 +44,50 @@ function pantheon_decoupled_graphql_smart_object_cache() {
 	set_transient( 'graphql_smart_object_cache', true );
 }
 
+function pantheon_decoupled_settings_init() { 
+    add_options_page( 'Pantheon Front-End Sites', 'Pantheon Front-End Sites', 'manage_options', 'pantheon-front-end-sites', 'pantheon_decoupled_options_page' );
+}
+
+function pantheon_decoupled_options_page() {
+    ?>
+        <div class="wrap">
+            <h1><?php esc_html_e( 'Pantheon Front-End Sites', 'wp-pantheon-decoupled' ); ?></h1>
+            <p>
+                <?php esc_html_e( 'Front-End Sites on Pantheon allow you to use', 'wp-pantheon-decoupled' ); ?> 
+                <a href="<?php echo esc_url('https://docs.pantheon.io/guides/decoupled/overview#what-is-a-decoupled-site'); ?>">
+                        <?php echo esc_html('decoupled architecture'); ?>
+                </a>
+                <?php esc_html_e( 'to separate your frontend and backend into distinct entities.', 'wp-pantheon-decoupled' ); ?> 
+            </p>
+            <p><?php esc_html_e( 'You can use the WordPress backend starter kit to streamline the creation of your Front-End Site on Pantheon.', 'wp-pantheon-decoupled' ); ?></p>
+            <h2><?php esc_html_e( 'Resources', 'wp-pantheon-decoupled' ); ?></h2>
+
+            <ul style="list-style-type:disc">
+                <li>
+                    <a href="<?php echo esc_url('https://docs.pantheon.io/guides/decoupled/overview'); ?>">
+                        <?php echo esc_html('Front-End Sites Overview');?>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo esc_url('https://docs.pantheon.io/guides/decoupled/wp-backend-starters'); ?>">
+                        <?php echo esc_html('WordPress Backend Starters'); ?>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo esc_url('https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters'); ?>">
+                        <?php echo esc_html('WordPress + Next.js Frontend Starter'); ?>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo esc_url('https://docs.pantheon.io/guides/decoupled/wp-gatsby-frontend-starters'); ?>">
+                        <?php echo esc_html('WordPress + Gatsby Frontend Starter'); ?>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    <?php
+}
+
 add_action('init', 'pantheon_decoupled_enable_deps');
+add_action( 'admin_menu', 'pantheon_decoupled_settings_init' );
