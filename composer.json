@@ -19,6 +19,11 @@
     "wpackagist-plugin/wp-webhooks": "^3.3.1",
     "pantheon-systems/decoupled-kit-acf": "^1.0"
   },
+  "require-dev": {
+    "pantheon-systems/pantheon-wp-coding-standards": "^1.0",
+    "phpunit/phpunit": "^9.6",
+    "yoast/phpunit-polyfills": "^2.0"
+  },
   "license": "GPL-2.0-or-later",
   "authors": [
     {
@@ -32,5 +37,14 @@
         "Disable Custom Port": "https://raw.githubusercontent.com/pantheon-systems/wp-pantheon-decoupled/main/disable-custom-port.patch"
       }
     }
+  },
+  "scripts": {
+    "lint:php": "find ./pantheon-decoupled-example.php ./pantheon-decoupled.php ./ -name '*.php' -exec php -l {} \\;",
+    "lint:phpcs": "phpcs -s --ignore=tests/* --standard=Pantheon-WP .",
+    "lint:phpcbf": "phpcbf -s --ignore=tests/* --standard=Pantheon-WP .",
+    "lint": "composer lint:php && composer lint:phpcs",
+    "phpunit": "vendor/bin/phpunit",
+    "test": "@phpunit",
+    "test:install": "bash bin/install-wp-tests.sh wordpress_test `whoami` '' localhost latest"
   }
 }
