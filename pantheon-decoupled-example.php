@@ -113,7 +113,7 @@ function set_default_options () {
 		set_transient( 'default_preview_set', true );
 		$secret = wp_generate_password( 10, false );
 		set_transient( 'example_preview_password', $secret );
-	
+
 		add_option(
 			'preview_sites',
 			[
