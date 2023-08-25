@@ -44,7 +44,7 @@ function pantheon_decoupled_graphql_smart_object_cache() {
     set_transient( 'graphql_smart_object_cache', true );
 }
 
-function pantheon_decoupled_settings_init() { 
+function pantheon_decoupled_settings_init() {
     add_options_page( 'Pantheon Front-End Sites', 'Pantheon Front-End Sites', 'manage_options', 'pantheon-front-end-sites', 'pantheon_decoupled_settings_page' );
 
     add_settings_field(
@@ -80,11 +80,11 @@ function pantheon_decoupled_resources() {
     ?>
         <div class="wrap">
             <p>
-                <?php esc_html_e( 'Front-End Sites on Pantheon allow you to use', 'wp-pantheon-decoupled' ); ?> 
+                <?php esc_html_e( 'Front-End Sites on Pantheon allow you to use', 'wp-pantheon-decoupled' ); ?>
                 <a href="<?php echo esc_url('https://docs.pantheon.io/guides/decoupled/overview#what-is-a-decoupled-site'); ?>">
                         <?php echo esc_html('decoupled architecture'); ?>
                 </a>
-                <?php esc_html_e( 'to separate your frontend and backend into distinct entities.', 'wp-pantheon-decoupled' ); ?> 
+                <?php esc_html_e( 'to separate your frontend and backend into distinct entities.', 'wp-pantheon-decoupled' ); ?>
             </p>
             <p><?php esc_html_e( 'You can use the WordPress backend starter kit to streamline the creation of your Front-End Site on Pantheon.', 'wp-pantheon-decoupled' ); ?></p>
             <h2><?php esc_html_e( 'Documentation', 'wp-pantheon-decoupled' ); ?></h2>
@@ -126,6 +126,7 @@ function pantheon_decoupled_preview_list_html() {
         require_once WP_PLUGIN_DIR . '/decoupled-preview/src/class-list-table.php';
     }
     require_once plugin_dir_path( __FILE__ ) . 'src/class-list-table.php';
+    add_thickbox();
     $add_site_url = wp_nonce_url(
         add_query_arg( [
             'page' => 'add_preview_sites',
