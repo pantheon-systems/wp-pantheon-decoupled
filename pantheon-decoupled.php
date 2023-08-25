@@ -46,6 +46,14 @@ function pantheon_decoupled_graphql_smart_object_cache() {
 
 function pantheon_decoupled_settings_init() {
     add_options_page( 'Pantheon Front-End Sites', 'Pantheon Front-End Sites', 'manage_options', 'pantheon-front-end-sites', 'pantheon_decoupled_settings_page' );
+    add_submenu_page(
+      'options-general.php',
+      '',
+      '',
+      'manage_options',
+      'test_preview_site',
+      'pantheon_decoupled_test_preview_page'
+    );
 
     add_settings_field(
         'fes-resources',
@@ -148,6 +156,14 @@ function pantheon_decoupled_preview_list_html() {
         ?>
         </div>
     <?php
+}
+
+function pantheon_decoupled_test_preview_page() {
+  ?>
+      <div class="wrap">
+          <h1><?php esc_html_e( 'Test Preview Site', 'wp-pantheon-decoupled' ); ?></h1>
+      </div>
+  <?php
 }
 
 add_action('init', 'pantheon_decoupled_enable_deps');
