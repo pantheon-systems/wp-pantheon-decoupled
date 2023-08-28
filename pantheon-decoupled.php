@@ -159,9 +159,61 @@ function pantheon_decoupled_preview_list_html() {
 }
 
 function pantheon_decoupled_test_preview_page() {
+  if ( ! current_user_can( 'manage_options' ) ) {
+    wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-decoupled-preview' ) );
+  }
+  check_admin_referer( 'test-preview-site', 'nonce' );
+
+  $docs_link = "<p>Consult the Pantheon Documentation for more information on <a href='https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters/content-preview' target='_blank' rel='noopener noreferrer'>configuring content preview</a>.</p>\n";
+
+  // Get data for preview site and assemble API call.
+  $id = isset( $_GET['id'] ) ? absint( sanitize_text_field( $_GET['id'] ) ) : NULL;
+  $preview_sites = get_option( 'preview_sites' );
+  $preview_site = isset( $preview_sites['preview'][ $id ] ) ? $preview_sites['preview'][ $id ] : NULL;
+  $test_url = $preview_site['url'] . '?secret=' . $preview_site['secret_string'] . '&uri=hello-world&id=1&content_type=post&test=true';
+
+  // Make test API call.
+  $response = wp_remote_get( $test_url );
+  $body     = json_decode(wp_remote_retrieve_body( $response ), true);
+
   ?>
+      <style>
+        /* Hide admin bar and padding on top of page. */
+        html.wp-toolbar {
+          padding-top: 0;
+        }
+        #wpadminbar {
+          display: none;
+        }
+      </style>
       <div class="wrap">
           <h1><?php esc_html_e( 'Test Preview Site', 'wp-pantheon-decoupled' ); ?></h1>
+          <?php
+            echo "<h3>{$preview_site['label']}</h3>\n";
+            if (empty($body)) {
+              // We weren't able to reach the preview endpoint at all.
+              echo "<p>There was an error connecting to the preview site.</p>\n";
+              echo "<p>Code: {$response['response']['code']}</p>\n";
+              echo "<p>Message: {$response['response']['message']}</p>\n";
+              echo $docs_link;
+            }
+            else if (isset($body["error"])) {
+              // We were able to reach the preview endpoint, but there was an error.
+              echo "<p>Error: {$body["error"]}</p>\n";
+              if (isset($body["message"]))  {
+                echo "<p>{$body["message"]}</p>\n";
+              }
+              echo $docs_link;
+            }
+            else {
+              // Success!
+              echo "<p>WordPress was able to communicate with your preview site and preview example content.</p>\n";
+              if (isset($body["message"]))  {
+                echo "<p>Code: {$response['response']['code']}</p>\n";
+                echo "<p>Message: {$body["message"]}</p>\n";
+              }
+            }
+          ?>
       </div>
   <?php
 }
