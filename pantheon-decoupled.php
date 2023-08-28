@@ -166,13 +166,23 @@ function pantheon_decoupled_test_preview_page() {
 
   $docs_link = "<p>Consult the Pantheon Documentation for more information on <a href='https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters/content-preview' target='_blank' rel='noopener noreferrer'>configuring content preview</a>.</p>\n";
 
-  // Get data for preview site and assemble API call.
+  // Get data for preview site
   $id = isset( $_GET['id'] ) ? absint( sanitize_text_field( $_GET['id'] ) ) : NULL;
   $preview_sites = get_option( 'preview_sites' );
   $preview_site = isset( $preview_sites['preview'][ $id ] ) ? $preview_sites['preview'][ $id ] : NULL;
-  $test_url = $preview_site['url'] . '?secret=' . $preview_site['secret_string'] . '&uri=hello-world&id=1&content_type=post&test=true';
+  $post_type = isset( $preview_site['content_type'] ) ? $preview_site['content_type'][0] : 'post';
+
+  // Get example content to preview.
+  $args = array(
+    'numberposts'	=> 1,
+    'order' => 'ASC',
+    'post_type' => $post_type
+  );
+  $posts = get_posts( $args );
+  $post = $posts[0];
 
   // Make test API call.
+  $test_url = $preview_site['url'] . '?secret=' . $preview_site['secret_string'] . '&uri=' . $post->post_name . '&id=' . $post->ID . '&content_type=' . $post_type . '&test=true';
   $response = wp_remote_get( $test_url );
   $body     = json_decode(wp_remote_retrieve_body( $response ), true);
 
@@ -199,9 +209,9 @@ function pantheon_decoupled_test_preview_page() {
             }
             else if (isset($body["error"])) {
               // We were able to reach the preview endpoint, but there was an error.
-              echo "<p>Error: {$body["error"]}</p>\n";
+              echo "<p>Error: " . esc_html__( $body["error"], 'wp-pantheon-decoupled' ) . "</p>\n";
               if (isset($body["message"]))  {
-                echo "<p>{$body["message"]}</p>\n";
+                echo "<p>Message: " . esc_html__( $body["message"], 'wp-pantheon-decoupled' ) . "</p>\n";
               }
               echo $docs_link;
             }
@@ -210,7 +220,7 @@ function pantheon_decoupled_test_preview_page() {
               echo "<p>WordPress was able to communicate with your preview site and preview example content.</p>\n";
               if (isset($body["message"]))  {
                 echo "<p>Code: {$response['response']['code']}</p>\n";
-                echo "<p>Message: {$body["message"]}</p>\n";
+                echo "<p>Message: " . esc_html__( $body["message"], 'wp-pantheon-decoupled' ) . "</p>\n";
               }
             }
           ?>
