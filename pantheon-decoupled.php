@@ -55,6 +55,16 @@ function pantheon_decoupled_settings_init() {
       'pantheon_decoupled_test_preview_page'
     );
 
+    add_submenu_page(
+        'options-general.php',
+        '',
+        '',
+        'manage_options',
+        'env_vars',
+        'pantheon_decoupled_env_vars'
+    );
+  
+
     add_settings_field(
         'fes-resources',
         '',
@@ -226,6 +236,47 @@ function pantheon_decoupled_test_preview_page() {
           ?>
       </div>
   <?php
+}
+
+function pantheon_decoupled_env_vars() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+      wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-decoupled-preview' ) );
+    }
+    check_admin_referer( 'env-vars', 'nonce' );
+
+    // Get data for preview site
+    $id = isset( $_GET['id'] ) ? absint( sanitize_text_field( $_GET['id'] ) ) : NULL;
+    $preview_sites = get_option( 'preview_sites' );
+    $preview_site = isset( $preview_sites['preview'][ $id ] ) ? $preview_sites['preview'][ $id ] : NULL;
+      
+    ?>
+        <style>
+          /* Hide admin bar and padding on top of page. */
+          html.wp-toolbar {
+            padding-top: 0;
+          }
+          #wpadminbar {
+            display: none;
+          }
+        </style>
+        <div class="wrap">
+            <h1><?php esc_html_e( 'Environment Variables', 'wp-pantheon-decoupled' ); ?></h1>
+            <h4>PREVIEW_SECRET</h4>
+            <?php
+              echo "<p>Value: {$preview_site['secret_string']}</p>\n";
+            ?>
+            <h4>WP_APPLICATION_USERNAME</h4>
+            <?php
+               echo "<p>Value: {$preview_site['associated_user']}</p>\n";
+            ?>
+            <h4>WP_APPLICATION_PASSWORD</h4>
+            <p>The application password associated with this user intended to be used with this preview site.</p>
+            <h4>Site URL</h4>
+            <?php
+              echo "<p>Link the CMS site that relates to {$preview_site['url']}</p>\n";
+            ?>
+        </div>
+    <?php
 }
 
 add_action('init', 'pantheon_decoupled_enable_deps');
