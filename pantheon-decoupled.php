@@ -47,16 +47,16 @@ function pantheon_decoupled_graphql_smart_object_cache() {
 function pantheon_decoupled_settings_init() {
     add_options_page( 'Pantheon Front-End Sites', 'Pantheon Front-End Sites', 'manage_options', 'pantheon-front-end-sites', 'pantheon_decoupled_settings_page' );
     add_submenu_page(
-      'options-general.php',
+      NULL,
       '',
       '',
       'manage_options',
       'test_preview_site',
-      'pantheon_decoupled_test_preview_page'
+      'pantheon_decoupled_test_preview_page',
     );
 
     add_submenu_page(
-        'options-general.php',
+        NULL,
         '',
         '',
         'manage_options',
@@ -248,6 +248,9 @@ function pantheon_decoupled_env_vars() {
     $id = isset( $_GET['id'] ) ? absint( sanitize_text_field( $_GET['id'] ) ) : NULL;
     $preview_sites = get_option( 'preview_sites' );
     $preview_site = isset( $preview_sites['preview'][ $id ] ) ? $preview_sites['preview'][ $id ] : NULL;
+    
+    global $wp;
+    $home_url = home_url( $wp->request );
       
     ?>
         <style>
@@ -271,9 +274,9 @@ function pantheon_decoupled_env_vars() {
             ?>
             <h4>WP_APPLICATION_PASSWORD</h4>
             <p>The application password associated with this user intended to be used with this preview site.</p>
-            <h4>Site URL</h4>
+            <h4>Linked CMS</h4>
             <?php
-              echo "<p>Link the CMS site that relates to {$preview_site['url']}</p>\n";
+              echo "<p>Link the CMS site that relates to: <strong>{$home_url}</strong></p>\n";
             ?>
         </div>
     <?php
