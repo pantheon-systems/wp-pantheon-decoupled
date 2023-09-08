@@ -87,7 +87,7 @@ function pantheon_decoupled_settings_page() {
         <div class="wrap">
             <h1><?php esc_html_e( 'Pantheon Front-End Sites', 'wp-pantheon-decoupled' ); ?></h1>
             <?php
-				do_settings_fields( 'pantheon-front-end-sites', 'wp-pantheon-decoupled-resources' );
+				        do_settings_fields( 'pantheon-front-end-sites', 'wp-pantheon-decoupled-resources' );
                 do_settings_fields( 'pantheon-front-end-sites', 'wp-pantheon-decoupled-list' );
             ?>
         </div>
@@ -282,5 +282,29 @@ function pantheon_decoupled_env_vars() {
     <?php
 }
 
+function pantheon_decoupled_admin_notice() {
+  $add_site_url = wp_nonce_url(
+    add_query_arg( [
+        'page' => 'pantheon-front-end-sites',
+    ], admin_url( 'options-general.php' ) ),
+    'pantheon-front-end-sites',
+    'nonce'
+  );
+
+  if( !get_transient( 'post_install_next_steps' ) ) {
+		?>
+			<div class="notice notice-success notice-alt below-h2">
+				<strong>Pantheon Decoupled Configuration</strong>
+				<p>
+					<label for="pantheon-decoupled-post-install">
+            In order to complete your configuration, visit the <a href="<?php echo esc_url_raw( $add_site_url ); ?>">Front-End Sites Settings</a> page.
+					</label>
+				</p>
+			</div>
+		<?php
+    set_transient('post_install_next_steps', true);
+	}
+}
+add_action('admin_notices', 'pantheon_decoupled_admin_notice');
 add_action('init', 'pantheon_decoupled_enable_deps');
 add_action( 'admin_menu', 'pantheon_decoupled_settings_init');
