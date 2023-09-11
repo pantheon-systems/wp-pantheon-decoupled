@@ -69,31 +69,6 @@ function pantheon_decoupled_example_menu() {
 	set_transient( 'pantheon_decoupled_example_menu_created', true );
 }
 
-
-/**
- * Show example preview password admin notice.
- *
- * @return void
- */
-function show_example_preview_password_admin_notice() {
-	$preview_password = get_transient( 'example_preview_password' );
-	if ( $preview_password ) {
-		?>
-		<div class="notice notice-success notice-alt below-h2 is-dismissible">
-			<strong><?php esc_html_e( 'Pantheon Decoupled Preview Example', 'wp-decoupled-preview' ); ?></strong>
-			<p class="decoupled-preview-example">
-				<label for="new-decoupled-preview-example-value">
-					<?php echo wp_kses( __( 'The shared secret of the <strong>Example NextJS Preview</strong> site is:', 'wp-decoupled-preview' ), [ 'strong' => [] ] ); ?>
-				</label>
-				<input type="text" class="code" value="<?php printf( esc_attr( get_transient( 'example_preview_password' ) ) ); ?>" />
-			</p>
-			<p><?php esc_html_e( 'Be sure to save this in a safe location. You will not be able to retrieve it.', 'wp-decoupled-preview' ); ?></p>
-		</div>
-		<?php
-		delete_transient( 'example_preview_password' );
-	}
-}
-
 /**
  * Delete preview sites options when deactivation plugin.
  *
@@ -112,7 +87,6 @@ function set_default_options () {
 	if ( ! get_transient( 'default_preview_set' ) ) {
 		set_transient( 'default_preview_set', true );
 		$secret = wp_generate_password( 10, false );
-		set_transient( 'example_preview_password', $secret );
 
 		add_option(
 			'preview_sites',
@@ -149,6 +123,5 @@ function pantheon_decoupled_example_activate() {
 
 
 add_action( 'init', 'pantheon_decoupled_example_activate' );
-add_action( 'admin_notices', 'show_example_preview_password_admin_notice' );
 register_activation_hook( __FILE__, __NAMESPACE__ . '\\set_default_options' );
 register_deactivation_hook( __FILE__, __NAMESPACE__ . '\\delete_default_options' );
