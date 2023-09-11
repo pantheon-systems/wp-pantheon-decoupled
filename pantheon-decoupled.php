@@ -47,13 +47,23 @@ function pantheon_decoupled_graphql_smart_object_cache() {
 function pantheon_decoupled_settings_init() {
     add_options_page( 'Pantheon Front-End Sites', 'Pantheon Front-End Sites', 'manage_options', 'pantheon-front-end-sites', 'pantheon_decoupled_settings_page' );
     add_submenu_page(
-      'options-general.php',
+      NULL,
       '',
       '',
       'manage_options',
       'test_preview_site',
-      'pantheon_decoupled_test_preview_page'
+      'pantheon_decoupled_test_preview_page',
     );
+
+    add_submenu_page(
+        NULL,
+        '',
+        '',
+        'manage_options',
+        'env_vars',
+        'pantheon_decoupled_env_vars'
+    );
+  
 
     add_settings_field(
         'fes-resources',
@@ -226,6 +236,50 @@ function pantheon_decoupled_test_preview_page() {
           ?>
       </div>
   <?php
+}
+
+function pantheon_decoupled_env_vars() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+      wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-decoupled-preview' ) );
+    }
+    check_admin_referer( 'env-vars', 'nonce' );
+
+    // Get data for preview site
+    $id = isset( $_GET['id'] ) ? absint( sanitize_text_field( $_GET['id'] ) ) : NULL;
+    $preview_sites = get_option( 'preview_sites' );
+    $preview_site = isset( $preview_sites['preview'][ $id ] ) ? $preview_sites['preview'][ $id ] : NULL;
+    
+    global $wp;
+    $home_url = home_url( $wp->request );
+      
+    ?>
+        <style>
+          /* Hide admin bar and padding on top of page. */
+          html.wp-toolbar {
+            padding-top: 0;
+          }
+          #wpadminbar {
+            display: none;
+          }
+        </style>
+        <div class="wrap">
+            <h1><?php esc_html_e( 'Environment Variables', 'wp-pantheon-decoupled' ); ?></h1>
+            <h4>PREVIEW_SECRET</h4>
+            <?php
+              echo "<p>Value: {$preview_site['secret_string']}</p>\n";
+            ?>
+            <h4>WP_APPLICATION_USERNAME</h4>
+            <?php
+               echo "<p>Value: {$preview_site['associated_user']}</p>\n";
+            ?>
+            <h4>WP_APPLICATION_PASSWORD</h4>
+            <p>The application password associated with this user intended to be used with this preview site.</p>
+            <h4>Linked CMS</h4>
+            <?php
+              echo "<p>Link the CMS site that relates to: <strong>{$home_url}</strong></p>\n";
+            ?>
+        </div>
+    <?php
 }
 
 add_action('init', 'pantheon_decoupled_enable_deps');
