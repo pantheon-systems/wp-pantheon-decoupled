@@ -15,6 +15,7 @@
 require_once(ABSPATH . 'wp-admin/includes/plugin.php');
 require_once(ABSPATH . 'wp-admin/includes/post.php');
 
+
 /**
  * Create a post when activating the plugin.
  */
@@ -65,20 +66,62 @@ function pantheon_decoupled_example_menu() {
 	$menu_locations = get_nav_menu_locations();
 	$menu_locations['footer'] = $menu_id;
 	set_theme_mod( 'nav_menu_locations', $menu_locations );
-	set_transient('pantheon_decoupled_example_menu_created', true);
+	set_transient( 'pantheon_decoupled_example_menu_created', true );
+}
+
+/**
+ * Delete preview sites options when deactivation plugin.
+ *
+ * @return void
+ */
+function delete_default_options() {
+	delete_option( 'preview_sites' );
+}
+
+/**
+ * Set default values for the preview sites options.
+ *
+ * @return void
+ */
+function set_default_options () {
+	if ( ! get_transient( 'default_preview_set' ) ) {
+		set_transient( 'default_preview_set', true );
+		$secret = wp_generate_password( 10, false );
+
+		add_option(
+			'preview_sites',
+			[
+				'preview' => [
+					1 => [
+						'label' => esc_html__( 'Example NextJS Preview', 'wp-decoupled-preview' ),
+						'url' => 'https://example.com/api/preview',
+						'secret_string' => $secret,
+						'preview_type' => 'Next.js',
+						'associated_user' => 'decoupled_example_user',
+						'id' => 1,
+					],
+				],
+			]
+		);
+	}
 }
 
 /**
  * Activate the plugin.
  */
 function pantheon_decoupled_example_activate() {
-	if ( !post_exists( "Example Post with Image" ) ) {
-		if ( !get_transient( 'pantheon_decoupled_example_created' ) ) {
+	if ( ! post_exists( 'Example Post with Image' ) ) {
+		if ( ! get_transient( 'pantheon_decoupled_example_created' ) ) {
 			pantheon_decoupled_example_create_post();
 		}
-		if ( !get_transient( 'pantheon_decoupled_example_menu_created' ) ) {
+		if ( ! get_transient( 'pantheon_decoupled_example_menu_created' ) ) {
 			pantheon_decoupled_example_menu();
 		}
 	}
 }
+
+
+
 add_action( 'init', 'pantheon_decoupled_example_activate' );
+register_activation_hook( __FILE__, __NAMESPACE__ . '\\set_default_options' );
+register_deactivation_hook( __FILE__, __NAMESPACE__ . '\\delete_default_options' );
