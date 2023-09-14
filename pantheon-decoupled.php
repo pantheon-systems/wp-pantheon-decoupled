@@ -14,6 +14,9 @@
 
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
+/**
+ * Enable plugins necessary for Decoupled WordPress sites.
+ */
 function pantheon_decoupled_enable_deps() {
 	activate_plugin( 'pantheon-decoupled-auth-example/pantheon-decoupled-auth-example.php' );
 	activate_plugin( 'pantheon-decoupled/pantheon-decoupled-example.php' );
@@ -31,6 +34,9 @@ function pantheon_decoupled_enable_deps() {
 	}
 }
 
+/**
+ * Change permalinks to /%postname%/ when activating the plugin.
+ */
 function pantheon_decoupled_change_permalinks() {
 	global $wp_rewrite;
 	$wp_rewrite->set_permalink_structure( '/%postname%/' );
@@ -39,6 +45,9 @@ function pantheon_decoupled_change_permalinks() {
 	set_transient( 'permalinks_customized', true );
 }
 
+/**
+ * Enable GraphQL Smart Object Cache when activating the plugin.
+ */
 function pantheon_decoupled_graphql_smart_object_cache() {
 	update_option( 'graphql_cache_section', [ 'global_max_age' => 600 ] );
 	set_transient( 'graphql_smart_object_cache', true );
