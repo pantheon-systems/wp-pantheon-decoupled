@@ -15,7 +15,6 @@
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 require_once ABSPATH . 'wp-admin/includes/post.php';
 
-
 /**
  * Create a post when activating the plugin.
  */
