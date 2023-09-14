@@ -42,12 +42,13 @@
 			<exclude-pattern>pantheon-decoupled.php</exclude-pattern>
 		</exclude>
 	</rule>
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.InvalidPrefixPassed">
 		<properties>
 			<!-- Value: replace the function, class, and variable prefixes used. Separate multiple prefixes with a comma. -->
 			<property name="prefixes" type="array" value="my-plugin"/>
 		</properties>
 	</rule>
-	<rule ref="WordPress.WP.I18n">
+	<rule ref="WordPress.WP.I18n.TextDomainMismatch">
 		<properties>
 			<!-- Value: replace the text domain used. -->
 			<property name="text_domain" type="array" value="my-plugin"/>
