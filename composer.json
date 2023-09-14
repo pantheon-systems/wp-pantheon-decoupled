@@ -40,8 +40,8 @@
   },
   "scripts": {
     "lint:php": "find ./pantheon-decoupled-example.php ./pantheon-decoupled.php ./ -name '*.php' -exec php -l {} \\;",
-    "lint:phpcs": "phpcs -s --ignore=tests/* --standard=Pantheon-WP .",
-    "lint:phpcbf": "phpcbf -s --ignore=tests/* --standard=Pantheon-WP .",
+    "lint:phpcs": "phpcs -s --ignore=tests/* .",
+    "lint:phpcbf": "phpcbf -s --ignore=tests/* .",
     "lint": "composer lint:php && composer lint:phpcs",
     "phpunit": "vendor/bin/phpunit",
     "test": "@phpunit",
