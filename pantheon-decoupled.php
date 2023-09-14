@@ -12,7 +12,7 @@
  * @package         Pantheon_Decoupled
  */
 
-require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 function pantheon_decoupled_enable_deps() {
 	activate_plugin( 'pantheon-decoupled-auth-example/pantheon-decoupled-auth-example.php' );
@@ -23,20 +23,20 @@ function pantheon_decoupled_enable_deps() {
 	activate_plugin( 'wp-graphql-smart-cache/wp-graphql-smart-cache.php' );
 	activate_plugin( 'wp-gatsby/wp-gatsby.php' );
 	activate_plugin( 'wp-force-login/wp-force-login.php' );
-	if ( !get_transient('permalinks_customized') ) {
+	if ( ! get_transient( 'permalinks_customized' ) ) {
 		pantheon_decoupled_change_permalinks();
 	}
-	if ( !get_transient( 'graphql_smart_object_cache' ) ) {
+	if ( ! get_transient( 'graphql_smart_object_cache' ) ) {
 		pantheon_decoupled_graphql_smart_object_cache();
 	}
 }
 
 function pantheon_decoupled_change_permalinks() {
 	global $wp_rewrite;
-	$wp_rewrite->set_permalink_structure('/%postname%/');
-	update_option( "rewrite_rules", FALSE );
+	$wp_rewrite->set_permalink_structure( '/%postname%/' );
+	update_option( 'rewrite_rules', false );
 	$wp_rewrite->flush_rules( true );
-	set_transient('permalinks_customized', true);
+	set_transient( 'permalinks_customized', true );
 }
 
 function pantheon_decoupled_graphql_smart_object_cache() {
@@ -44,4 +44,4 @@ function pantheon_decoupled_graphql_smart_object_cache() {
 	set_transient( 'graphql_smart_object_cache', true );
 }
 
-add_action('init', 'pantheon_decoupled_enable_deps');
+add_action( 'init', 'pantheon_decoupled_enable_deps' );
