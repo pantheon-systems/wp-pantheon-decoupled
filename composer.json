@@ -46,5 +46,11 @@
     "phpunit": "vendor/bin/phpunit",
     "test": "@phpunit",
     "test:install": "bash bin/install-wp-tests.sh wordpress_test `whoami` '' localhost latest"
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
   }
 }
