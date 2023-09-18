@@ -13,6 +13,8 @@
  */
 
 require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+use Pantheon\DecoupledPreview\Decoupled_Preview_Settings;
+
 
 function pantheon_decoupled_enable_deps() {
     activate_plugin( 'pantheon-decoupled-auth-example/pantheon-decoupled-auth-example.php' );
@@ -63,7 +65,24 @@ function pantheon_decoupled_settings_init() {
         'env_vars',
         'pantheon_decoupled_env_vars'
     );
-  
+
+    add_submenu_page(
+      NULL,
+      '',
+      '',
+      'manage_options',
+      'preview_delete',
+      'pantheon_decoupled_preview_delete'
+    );
+
+    add_submenu_page(
+      NULL,
+      '',
+      '',
+      'manage_options',
+      'preview_delete_success',
+      'pantheon_decoupled_delete_success'
+    );
 
     add_settings_field(
         'fes-resources',
@@ -145,6 +164,7 @@ function pantheon_decoupled_preview_list_html() {
     }
     require_once plugin_dir_path( __FILE__ ) . 'src/class-list-table.php';
     add_thickbox();
+   
     $add_site_url = wp_nonce_url(
         add_query_arg( [
             'page' => 'add_preview_sites',
@@ -161,7 +181,7 @@ function pantheon_decoupled_preview_list_html() {
         <?php
         wp_create_nonce( 'preview-site-list' );
         $wp_list_table = new FES_Preview_Table();
-        $wp_list_table-> prepare_items();
+        $wp_list_table->prepare_items();
         $wp_list_table->display();
         ?>
         </div>
@@ -280,6 +300,90 @@ function pantheon_decoupled_env_vars() {
             ?>
         </div>
     <?php
+}
+
+function pantheon_decoupled_preview_delete() {
+  if ( ! current_user_can( 'manage_options' ) ) {
+    wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-decoupled-preview' ) );
+  }
+  check_admin_referer( 'edit-preview-site', 'nonce' );
+  $edit_id = isset( $_GET['id'] ) ? sanitize_text_field( $_GET['id'] ) : false;
+  if ( $edit_id ) {
+    $action = 'options.php?edit=' . $edit_id;
+  } else {
+    $action = 'options.php';
+  }
+
+  $id = isset( $_GET['id'] ) ? absint( sanitize_text_field( $_GET['id'] ) ) : NULL;
+  $preview_sites = get_option( 'preview_sites' );
+  $preview_site = isset( $preview_sites['preview'][ $id ] ) ? $preview_sites['preview'][ $id ] : NULL;
+
+  ?>
+      <style>
+        /* Hide admin bar and padding on top of page. */
+        html.wp-toolbar {
+          padding-top: 0;
+        }
+        #wpadminbar {
+          display: none;
+        }
+      </style>
+      <div class="wrap">
+        <h1><?php esc_html_e( 'Delete Preview Site', 'wp-pantheon-decoupled' ); ?></h1>
+        <?php
+        if ( $id ) {
+          $site_label = $preview_site['label'];
+          $url = wp_nonce_url( add_query_arg( [
+            'page' => 'preview_delete_success',
+            'id' => $id,
+          ], admin_url( 'options-general.php' ) ), 'edit-preview-site', 'nonce' );
+          ?>
+          <a id="delete-preview" class="button-secondary button-large" href="<?php echo esc_url( $url ); ?>">
+            <?php
+            echo esc_html(
+              // Translators: %s is the preview site label.
+              sprintf( __( 'Delete %s', 'wp-decoupled-preview' ), $site_label )
+            );
+
+            ?>
+          </a>
+          <?php
+        }
+        ?>
+      </div>
+  <?php
+}
+
+function pantheon_decoupled_delete_success() {
+  if ( ! current_user_can( 'manage_options' ) ) {
+    wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-decoupled-preview' ) );
+  }
+
+  check_admin_referer( 'edit-preview-site', 'nonce' );
+  $delete_id = isset( $_GET['id'] ) ? absint( sanitize_text_field( $_GET['id'] ) ) : NULL;
+
+  if ( ! $delete_id ) {
+    wp_die( esc_html__( 'Unable perform action: Site not found.', 'wp-decoupled-preview' ) );
+  }
+  $wp_preview_delete = new Decoupled_Preview_Settings();
+  $wp_preview_delete->delete_preview_site( $delete_id );
+
+  ?>
+  <style>
+    /* Hide admin bar and padding on top of page. */
+    html.wp-toolbar {
+      padding-top: 0;
+    }
+    #wpadminbar {
+      display: none;
+    }
+  </style>
+  <div class="wrap">
+      <h1><?php esc_html_e( 'Delete Preview Success', 'wp-pantheon-decoupled' ); ?></h1>
+      <p><strong>You have successfully deleted a preview site</strong></p>
+  </div>
+<?php
+
 }
 
 function pantheon_decoupled_admin_notice() {
