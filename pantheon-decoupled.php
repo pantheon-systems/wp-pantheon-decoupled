@@ -12,33 +12,42 @@
  * @package         Pantheon_Decoupled
  */
 
-require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
+/**
+ * Enable plugins necessary for Decoupled WordPress sites.
+ */
 function pantheon_decoupled_enable_deps() {
-    activate_plugin( 'pantheon-decoupled-auth-example/pantheon-decoupled-auth-example.php' );
-    activate_plugin( 'pantheon-decoupled/pantheon-decoupled-example.php' );
-    activate_plugin( 'decoupled-preview/wp-decoupled-preview.php' );
-    activate_plugin( 'pantheon-advanced-page-cache/pantheon-advanced-page-cache.php' );
-    activate_plugin( 'wp-graphql/wp-graphql.php' );
-    activate_plugin( 'wp-graphql-smart-cache/wp-graphql-smart-cache.php' );
-    activate_plugin( 'wp-gatsby/wp-gatsby.php' );
-    activate_plugin( 'wp-force-login/wp-force-login.php' );
-    if ( !get_transient('permalinks_customized') ) {
-        pantheon_decoupled_change_permalinks();
-    }
-    if ( !get_transient( 'graphql_smart_object_cache' ) ) {
-        pantheon_decoupled_graphql_smart_object_cache();
-    }
+	activate_plugin( 'pantheon-decoupled-auth-example/pantheon-decoupled-auth-example.php' );
+	activate_plugin( 'pantheon-decoupled/pantheon-decoupled-example.php' );
+	activate_plugin( 'decoupled-preview/wp-decoupled-preview.php' );
+	activate_plugin( 'pantheon-advanced-page-cache/pantheon-advanced-page-cache.php' );
+	activate_plugin( 'wp-graphql/wp-graphql.php' );
+	activate_plugin( 'wp-graphql-smart-cache/wp-graphql-smart-cache.php' );
+	activate_plugin( 'wp-gatsby/wp-gatsby.php' );
+	activate_plugin( 'wp-force-login/wp-force-login.php' );
+	if ( ! get_transient( 'permalinks_customized' ) ) {
+		pantheon_decoupled_change_permalinks();
+	}
+	if ( ! get_transient( 'graphql_smart_object_cache' ) ) {
+		pantheon_decoupled_graphql_smart_object_cache();
+	}
 }
 
+/**
+ * Change permalinks to /%postname%/ when activating the plugin.
+ */
 function pantheon_decoupled_change_permalinks() {
-    global $wp_rewrite;
-    $wp_rewrite->set_permalink_structure('/%postname%/');
-    update_option( "rewrite_rules", FALSE );
-    $wp_rewrite->flush_rules( true );
-    set_transient('permalinks_customized', true);
+	global $wp_rewrite;
+	$wp_rewrite->set_permalink_structure( '/%postname%/' );
+	update_option( 'rewrite_rules', false );
+	$wp_rewrite->flush_rules( true );
+	set_transient( 'permalinks_customized', true );
 }
 
+/**
+ * Enable GraphQL Smart Object Cache when activating the plugin.
+ */
 function pantheon_decoupled_graphql_smart_object_cache() {
     update_option( 'graphql_cache_section', [ 'global_max_age' => 600 ] );
     set_transient( 'graphql_smart_object_cache', true );
@@ -63,7 +72,7 @@ function pantheon_decoupled_settings_init() {
         'env_vars',
         'pantheon_decoupled_env_vars'
     );
-  
+
 
     add_settings_field(
         'fes-resources',
@@ -248,10 +257,10 @@ function pantheon_decoupled_env_vars() {
     $id = isset( $_GET['id'] ) ? absint( sanitize_text_field( $_GET['id'] ) ) : NULL;
     $preview_sites = get_option( 'preview_sites' );
     $preview_site = isset( $preview_sites['preview'][ $id ] ) ? $preview_sites['preview'][ $id ] : NULL;
-    
+
     global $wp;
     $home_url = home_url( $wp->request );
-      
+
     ?>
         <style>
           /* Hide admin bar and padding on top of page. */
