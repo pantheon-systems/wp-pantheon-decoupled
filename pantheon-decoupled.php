@@ -73,6 +73,15 @@ function pantheon_decoupled_settings_init() {
         'pantheon_decoupled_env_vars'
     );
 
+    add_submenu_page(
+      NULL,
+      '',
+      '',
+      'manage_options',
+      'fes_add_preview_sites',
+      'pantheon_decoupled_create_html',
+    );
+
 
     add_settings_field(
         'fes-resources',
@@ -156,7 +165,7 @@ function pantheon_decoupled_preview_list_html() {
     add_thickbox();
     $add_site_url = wp_nonce_url(
         add_query_arg( [
-            'page' => 'add_preview_sites',
+            'page' => 'fes_add_preview_sites',
         ], admin_url( 'options-general.php' ) ),
         'edit-preview-site',
         'nonce'
@@ -164,7 +173,7 @@ function pantheon_decoupled_preview_list_html() {
     ?>
 		<h2><?php esc_html_e( 'Preview Sites', 'wp-pantheon-decoupled' ); ?></h2>
         <span>
-            <a href="<?php echo esc_url_raw( $add_site_url ); ?>" class="button-primary">+ <?php esc_html_e( 'Add Preview Site', 'wp-pantheon-decoupled-list' ); ?></a>
+            <a href="<?php echo esc_url_raw( $add_site_url ); ?>&width=600&height=500" class="button-primary thickbox">+ <?php esc_html_e( 'Add Preview Site', 'wp-pantheon-decoupled-list' ); ?></a>
         </span>
         <div>
         <?php
@@ -175,6 +184,71 @@ function pantheon_decoupled_preview_list_html() {
         ?>
         </div>
     <?php
+}
+
+function pantheon_decoupled_create_html() {
+  if ( ! current_user_can( 'manage_options' ) ) {
+    wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-decoupled-preview' ) );
+  }
+
+  check_admin_referer( 'edit-preview-site', 'nonce' );
+  $edit_id = isset( $_GET['id'] ) ? sanitize_text_field( $_GET['id'] ) : false;
+  if ( $edit_id ) {
+    $action = 'options.php?edit=' . $edit_id;
+  } else {
+    $action = 'options.php';
+  }
+  ?>
+  <style>
+    /*
+    Styles here are for ajax version of thickbox. We lose some styles, but gain
+    a loading indicator...
+    */
+    #TB_window #adminmenumain {
+      display: none;
+    }
+    #TB_window #wpcontent,
+    #TB_window #wpfooter {
+      margin-left: 0;
+    }
+  </style>
+  <h1>FES Add Preview</h1>
+  <div class="wrap">
+				<h1><?php esc_html_e( 'Create or Edit Preview Site', 'wp-decoupled-preview' ); ?></h1>
+				<p><a href="<?php echo esc_url( add_query_arg( 'page', 'preview_sites', admin_url( 'options-general.php' ) ) ); ?>">&larr; <?php esc_html_e( 'Back to Preview Sites Configuration', 'wp-decoupled-preview' ); ?></a></p>
+				<form action="<?php echo esc_url( $action ); ?>" method="post">
+					<?php
+          settings_fields( 'wp-decoupled-preview' );
+          do_settings_sections( 'preview_sites' );
+					?>
+					<?php wp_nonce_field( 'edit-preview-site', 'nonce' ); ?>
+					<?php submit_button(); ?>
+					<?php
+					if ( $edit_id ) {
+						$site_label = $this->get_preview_site( $edit_id )['label'];
+						$url = wp_nonce_url(
+							add_query_arg( [
+								'page' => 'delete_preview_site',
+								'id' => $edit_id,
+							], admin_url( 'options-general.php' ) ),
+							'edit-preview-site',
+							'nonce'
+						);
+						?>
+						<a id="delete-preview" class="button-secondary button-large" href="<?php echo esc_url( $url ); ?>">
+							<?php
+							echo esc_html(
+								// Translators: %s is the preview site label.
+								sprintf( __( 'Delete %s', 'wp-decoupled-preview' ), $site_label )
+							);
+							?>
+						</a>
+						<?php
+					}
+					?>
+				</form>
+			</div>
+  <?php
 }
 
 function pantheon_decoupled_test_preview_page() {
