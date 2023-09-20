@@ -194,9 +194,9 @@ function pantheon_decoupled_create_html() {
   check_admin_referer( 'edit-preview-site', 'nonce' );
   $edit_id = isset( $_GET['id'] ) ? sanitize_text_field( $_GET['id'] ) : false;
   if ( $edit_id ) {
-    $action = 'options.php?edit=' . $edit_id;
+    $action = 'options.php?fes=1&edit=' . $edit_id;
   } else {
-    $action = 'options.php';
+    $action = 'options.php?fes=1';
   }
   ?>
   <style>
@@ -204,15 +204,24 @@ function pantheon_decoupled_create_html() {
     Styles here are for ajax version of thickbox. We lose some styles, but gain
     a loading indicator...
     */
-    #TB_window #adminmenumain {
+    #TB_window {
+      background-color: rgb(240, 240, 241);
+    }
+    #TB_window #adminmenumain,
+    #TB_window #wpfooter {
       display: none;
     }
-    #TB_window #wpcontent,
-    #TB_window #wpfooter {
+    #TB_window #wpcontent {
       margin-left: 0;
     }
+    /*
+    Remove back to preview sites link which does't make sense in this
+    context
+    */
+    #TB_window h1 + p a {
+      display: none;
+    }
   </style>
-  <h1>FES Add Preview</h1>
   <div class="wrap">
 				<h1><?php esc_html_e( 'Create or Edit Preview Site', 'wp-decoupled-preview' ); ?></h1>
 				<p><a href="<?php echo esc_url( add_query_arg( 'page', 'preview_sites', admin_url( 'options-general.php' ) ) ); ?>">&larr; <?php esc_html_e( 'Back to Preview Sites Configuration', 'wp-decoupled-preview' ); ?></a></p>
@@ -388,6 +397,18 @@ function pantheon_decoupled_admin_notice() {
     set_transient('post_install_next_steps', true);
 	}
 }
+
+function pantheon_decoupled_redirect_to_fes() {
+  // If options are being edited on FES settings page, redirect there when
+  // option is updated.
+  $is_fes = isset( $_GET['fes'] ) ? absint( sanitize_text_field( $_GET['fes'] ) ) : NULL;
+  if ( $is_fes ) {
+    wp_redirect( 'options-general.php?page=pantheon-front-end-sites' );
+    exit;
+  }
+}
+
 add_action('admin_notices', 'pantheon_decoupled_admin_notice');
 add_action('init', 'pantheon_decoupled_enable_deps');
 add_action( 'admin_menu', 'pantheon_decoupled_settings_init');
+add_action( 'update_option_preview_sites', 'pantheon_decoupled_redirect_to_fes' );
