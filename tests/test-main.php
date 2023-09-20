@@ -8,7 +8,7 @@
  */
 
 
-include __DIR__ . '/../pantheon-decoupled-example.php';
+require __DIR__ . '/../pantheon-decoupled-example.php';
 
 use WP_UnitTestCase;
 
@@ -22,7 +22,7 @@ class Test_Main extends WP_UnitTestCase {
 	 *
 	 * @return void
 	 */
-	public function test_default_options() : void {
+	public function test_default_options(): void {
 		// Set the default options.
 		set_default_options();
 		$options = get_option( 'preview_sites' );
