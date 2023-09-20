@@ -214,17 +214,9 @@ function pantheon_decoupled_create_html() {
     #TB_window #wpcontent {
       margin-left: 0;
     }
-    /*
-    Remove back to preview sites link which does't make sense in this
-    context
-    */
-    #TB_window h1 + p a {
-      display: none;
-    }
   </style>
   <div class="wrap">
 				<h1><?php esc_html_e( 'Create or Edit Preview Site', 'wp-decoupled-preview' ); ?></h1>
-				<p><a href="<?php echo esc_url( add_query_arg( 'page', 'preview_sites', admin_url( 'options-general.php' ) ) ); ?>">&larr; <?php esc_html_e( 'Back to Preview Sites Configuration', 'wp-decoupled-preview' ); ?></a></p>
 				<form action="<?php echo esc_url( $action ); ?>" method="post">
 					<?php
           settings_fields( 'wp-decoupled-preview' );
