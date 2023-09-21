@@ -13,6 +13,7 @@
  */
 
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
+use Pantheon\DecoupledPreview\Decoupled_Preview_Settings;
 
 /**
  * Enable plugins necessary for Decoupled WordPress sites.
@@ -87,6 +88,14 @@ function pantheon_decoupled_settings_init() {
 		'pantheon_decoupled_create_html'
 	);
 
+    add_submenu_page(
+      NULL,
+      '',
+      '',
+      'manage_options',
+      'preview_delete',
+      'pantheon_decoupled_preview_delete'
+    );
 
 	add_settings_field(
 		'fes-resources',
@@ -443,9 +452,88 @@ function pantheon_decoupled_redirect_to_fes() {
   // phpcs:disable WordPress.Security.NonceVerification.Recommended
 	$is_fes = isset( $_GET['fes'] ) ? absint( sanitize_text_field( $_GET['fes'] ) ) : null;
 	if ( $is_fes ) {
-		wp_safe_redirect( 'options-general.php?page=pantheon-front-end-sites' );
+      echo '<script type="text/javascript">window.location = "options-general.php?page=pantheon-front-end-sites"</script>';
 		exit;
 	}
+}
+
+function pantheon_decoupled_preview_delete() {
+  if ( ! current_user_can( 'manage_options' ) ) {
+    wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-decoupled-preview' ) );
+  }
+  check_admin_referer( 'edit-preview-site', 'nonce' );
+  $edit_id = isset( $_GET['id'] ) ? sanitize_text_field( $_GET['id'] ) : false;
+  if ( $edit_id ) {
+    $action = 'options.php?fes=1&edit=' . $edit_id;
+  } else {
+    $action = 'options.php?fes=1';
+  }
+
+  $preview_sites = get_option( 'preview_sites' );
+  $preview_site = isset( $preview_sites['preview'][ $edit_id ] ) ? $preview_sites['preview'][ $edit_id ] : NULL;
+
+  ?>
+       <style>
+    /*
+    Styles here are for ajax version of thickbox. We lose some styles, but gain
+    a loading indicator...
+    */
+    #TB_window {
+      background-color: rgb(240, 240, 241);
+    }
+    #TB_window #adminmenumain,
+    #TB_window #wpfooter {
+      display: none;
+    }
+    #TB_window #wpcontent {
+      margin-left: 0;
+    }
+  </style>
+      <div class="wrap">
+        <h1><?php esc_html_e( 'Delete Preview Site', 'wp-pantheon-decoupled' ); ?></h1>
+        <form action="<?php echo esc_url( $action ); ?>" method="post">
+        <?php
+        if ( $edit_id ) {
+          $site_label = $preview_site['label'];
+          $url = wp_nonce_url(
+            add_query_arg( [
+              'page' => 'delete_preview_site',
+              'id' => $edit_id,
+            ], admin_url( $action ) ),
+            'edit-preview-site',
+            'nonce'
+          );
+          ?>
+          <a id="delete-preview" class="button-secondary button-large" href="<?php echo esc_url( $url ); ?>">
+            <?php
+            echo esc_html(
+              // Translators: %s is the preview site label.
+              sprintf( __( 'Delete %s', 'wp-decoupled-preview' ), $site_label )
+            );
+
+            ?>
+          </a>
+          <?php
+        }
+        ?>
+        </form>
+      </div>
+  <?php
+}
+
+function pantheon_decoupled_delete_success() {
+  if ( ! current_user_can( 'manage_options' ) ) {
+    wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-decoupled-preview' ) );
+  }
+
+  check_admin_referer( 'edit-preview-site', 'nonce' );
+  $delete_id = isset( $_GET['id'] ) ? absint( sanitize_text_field( $_GET['id'] ) ) : NULL;
+
+  if ( ! $delete_id ) {
+    wp_die( esc_html__( 'Unable perform action: Site not found.', 'wp-decoupled-preview' ) );
+  }
+  $wp_preview_delete = new Decoupled_Preview_Settings();
+  $wp_preview_delete->delete_preview_site( $delete_id );
 }
 
 add_action( 'admin_notices', 'pantheon_decoupled_admin_notice' );
