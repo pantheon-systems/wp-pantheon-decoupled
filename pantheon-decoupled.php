@@ -79,6 +79,25 @@ function pantheon_decoupled_settings_init() {
 		'pantheon_decoupled_env_vars'
 	);
 
+  add_submenu_page(
+    null,
+    '',
+    '',
+    'manage_options',
+    'env_regen',
+    'pantheon_decoupled_regen_env_vars'
+  );
+
+  add_submenu_page(
+    null,
+    '',
+    '',
+    'manage_options',
+    'env_regen_action',
+    'pantheon_decoupled_regen_env_vars_action'
+  );
+  
+
 	add_submenu_page(
 		null,
 		'',
@@ -544,6 +563,128 @@ function pantheon_decoupled_delete_success() {
 	}
 	$wp_preview_delete = new Decoupled_Preview_Settings();
 	$wp_preview_delete->delete_preview_site( $delete_id );
+}
+
+function pantheon_decoupled_regen_env_vars() {
+  if ( ! current_user_can( 'manage_options' ) ) {
+    wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-decoupled-preview' ) );
+  }
+  check_admin_referer( 'env-regen', 'nonce' );
+
+  // Get data for preview site
+  $id = isset( $_GET['id'] ) ? absint( sanitize_text_field( $_GET['id'] ) ) : NULL;
+  $preview_sites = get_option( 'preview_sites' );
+  $preview_site = isset( $preview_sites['preview'][ $id ] ) ? $preview_sites['preview'][ $id ] : NULL;
+  
+  $docs_url = 'https://docs.pantheon.io/guides/decoupled/overview'
+    
+  ?>
+      <style>
+        /* Hide admin bar and padding on top of page. */
+        html.wp-toolbar {
+          padding-top: 0;
+        }
+        #wpadminbar {
+          display: none;
+        }
+      </style>
+      <div class="wrap">
+          <h1><?php esc_html_e( 'Regenerate Environment Variables', 'wp-pantheon-decoupled' ); ?></h1>
+          <?php
+        if ( $id ) {
+          $site_label = $preview_site['label'];
+          $url = wp_nonce_url( add_query_arg( [
+            'page' => 'env_regen_action',
+            'id' => $id,
+          ], admin_url( 'options-general.php' ) ), 'env-regen', 'nonce' );
+          ?>
+          <a id="regen-password" class="button-secondary button-large" href="<?php echo esc_url( $url ); ?>">
+            <?php
+            echo esc_html(
+              // Translators: %s is the preview site label.
+              sprintf( __( 'Regenerate %s WP_APPLICATION_PASSWORD', 'wp-decoupled-preview' ), $site_label )
+            );
+            ?>
+          </a>
+          <p>Checkout the Pantheon
+            <a id="docs-link" target="_blank" href="<?php echo esc_url( $docs_url ); ?>">
+              platform docs
+            </a> for more information about Front-End Site configuration.
+          </p>
+          <?php
+        }
+        ?>
+      </div>
+  <?php
+}
+
+/**
+ * Helper to get password by name.
+ *
+ * @return string
+ */
+function pantheon_decoupled_get_user_application_password( $user_id, $id ) {
+	$passwords = WP_Application_Passwords::get_user_application_passwords( $user_id );
+
+	foreach ( $passwords as $password ) {
+		if ( $password['name'] === strval($id)) {
+			return $password;
+		}
+	}
+	return null;
+}
+
+function pantheon_decoupled_regen_env_vars_action() {
+  if ( ! current_user_can( 'manage_options' ) ) {
+    wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-decoupled-preview' ) );
+  }
+  check_admin_referer( 'env-regen', 'nonce' );
+  $id = isset( $_GET['id'] ) ? absint( sanitize_text_field( $_GET['id'] ) ) : NULL;
+  $user_id = get_current_user_id();
+  // If a password exists for this preview site and user, delete it so that a new one can be generated
+  if(WP_Application_Passwords::application_name_exists_for_user($user_id, $id)) {
+    $currentPassword = pantheon_decoupled_get_user_application_password( $user_id, $id );
+    WP_Application_Passwords::delete_application_password($user_id, $currentPassword['uuid']);
+  }
+  $app_password = WP_Application_Passwords::create_new_application_password($user_id, array( 'name' => $id ));
+
+  $preview_sites = get_option( 'preview_sites' );
+  $preview_site = isset( $preview_sites['preview'][ $id ] ) ? $preview_sites['preview'][ $id ] : NULL;
+  $site_label = $preview_site['label'];
+  
+  ?>
+      <style>
+        /* Hide admin bar and padding on top of page. */
+        html.wp-toolbar {
+          padding-top: 0;
+        }
+        #wpadminbar {
+          display: none;
+        }
+        input {
+          width: 300px;
+        }
+      </style>
+      <div class="wrap">
+          <h1><?php esc_html_e( 'Regenerate Environment Variables', 'wp-pantheon-decoupled' ); ?></h1>
+          <p>
+            <label for="new-application-password-value">
+              The password of the <strong> <?php
+              echo esc_html(
+                // Translators: %s is the preview site label.
+                sprintf( __( '%s', 'wp-decoupled-preview' ), $site_label )
+              );
+              ?></strong> site is:
+            </label>
+          </p>
+          <input type="text" class="code" value="<?php printf(esc_attr( WP_Application_Passwords::chunk_password($app_password[0]))); ?>" />
+          <p>Checkout the Pantheon
+            <a id="docs-link" target="_blank" href="<?php echo esc_url( $docs_url ); ?>">
+              platform docs
+            </a> for more information about Front-End Site configuration.
+          </p>
+      </div>
+  <?php
 }
 
 add_action( 'admin_notices', 'pantheon_decoupled_admin_notice' );
