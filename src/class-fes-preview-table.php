@@ -54,7 +54,7 @@ class FES_Preview_Table extends List_Table {
 						'action' => 'delete',
 						'id' => $item['id'],
 					], admin_url( 'options-general.php' ) ), 'edit-preview-site', 'nonce' ),
-					esc_html__( 'Delete', 'wp-decoupled-preview' ),
+					esc_html__( 'Delete', 'wp-decoupled-preview' )
 				);
 			default:
 				return '';
