@@ -115,6 +115,17 @@ function pantheon_decoupled_settings_init() {
 }
 
 /**
+ * Removes Preview Sites from settings menu since the the Front-End Sites
+ * settings page includes equivalent functionality.
+ * It will still be possible to access the settings page directly.
+ *
+ * @return void
+ */
+function remove_preview_sites_submenu() {
+	remove_submenu_page( 'options-general.php', 'preview_sites' );
+}
+
+/**
  * Render markup for front-end sites settings page
  *
  * @return void
@@ -550,3 +561,4 @@ add_action( 'admin_notices', 'pantheon_decoupled_admin_notice' );
 add_action( 'init', 'pantheon_decoupled_enable_deps' );
 add_action( 'admin_menu', 'pantheon_decoupled_settings_init' );
 add_action( 'update_option_preview_sites', 'pantheon_decoupled_redirect_to_fes' );
+add_action( 'admin_menu', 'remove_preview_sites_submenu', 999 );
