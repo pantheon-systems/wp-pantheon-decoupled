@@ -30,9 +30,9 @@ class FES_Preview_Table extends List_Table {
 				return isset( $item['content_type'] ) ? ucwords( implode( ', ', $item['content_type'] ) ) : __( 'Post, Page', 'wp-decoupled-preview' );
 			case 'actions':
 				return sprintf(
-					'<a href="%s">%s</a> | <a href="%s&TB_iframe=true&width=600&height=500" class="thickbox">%s</a> | <a href="%s&TB_iframe=true&width=600&height=500" class="thickbox">%s</a> | <a href="%s&width=600&height=500" class="thickbox">%s</a>',
+					'<a href="%s&width=600&height=500" class="thickbox">%s</a> | <a href="%s&width=600&height=500" class="thickbox">%s</a> | <a href="%s&width=600&height=500" class="thickbox">%s</a> | <a href="%s&width=600&height=500" class="thickbox">%s</a>',
 					wp_nonce_url( add_query_arg( [
-						'page' => 'add_preview_sites',
+						'page' => 'fes_add_preview_sites',
 						'action' => 'edit',
 						'id' => $item['id'],
 					], admin_url( 'options-general.php' ) ), 'edit-preview-site', 'nonce' ),
