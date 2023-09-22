@@ -247,33 +247,33 @@ function pantheon_decoupled_create_html() {
 		$action = 'options.php?fes=1';
 	}
 	?>
-	<style>
-	/*
-	Styles here are for ajax version of thickbox. We lose some styles, but gain
-	a loading indicator...
-	*/
-	#TB_window {
-		background-color: rgb(240, 240, 241);
-	}
-	#TB_window #adminmenumain,
-	#TB_window #wpfooter {
-		display: none;
-	}
-	#TB_window #wpcontent {
-		margin-left: 0;
-	}
-	</style>
-	<div class="wrap">
-				<h1><?php esc_html_e( 'Create or Edit Preview Site', 'wp-decoupled-preview' ); ?></h1>
-				<form action="<?php echo esc_url( $action ); ?>" method="post">
-					<?php
-					settings_fields( 'wp-decoupled-preview' );
-					do_settings_sections( 'preview_sites' );
-					?>
-					<?php wp_nonce_field( 'edit-preview-site', 'nonce' ); ?>
-					<?php submit_button(); ?>
-				</form>
-			</div>
+    <style>
+      /*
+      Styles here are for ajax version of thickbox. We lose some styles, but gain
+      a loading indicator...
+      */
+      #TB_window {
+        background-color: rgb(240, 240, 241);
+      }
+      #TB_window #adminmenumain,
+      #TB_window #wpfooter {
+        display: none;
+      }
+      #TB_window #wpcontent {
+        margin-left: 0;
+      }
+    </style>
+    <div class="wrap">
+      <h1><?php esc_html_e( 'Create or Edit Preview Site', 'wp-decoupled-preview' ); ?></h1>
+      <form action="<?php echo esc_url( $action ); ?>" method="post">
+        <?php
+        settings_fields( 'wp-decoupled-preview' );
+        do_settings_sections( 'preview_sites' );
+        ?>
+        <?php wp_nonce_field( 'edit-preview-site', 'nonce' ); ?>
+        <?php submit_button(); ?>
+      </form>
+		</div>
 	<?php
 }
 
@@ -311,63 +311,66 @@ function pantheon_decoupled_test_preview_page() {
 	$body     = json_decode( wp_remote_retrieve_body( $response ), true );
   // phpcs:disable WordPressVIPMinimum.UserExperience.AdminBarRemoval.HidingDetected
 	?>
-		<style>
-		/* Hide admin bar and padding on top of page. */
-		html.wp-toolbar {
-			padding-top: 0;
-		}
-	#wpadminbar {
-			display: none;
-		}
-		</style>
-		<div class="wrap">
-			<h1><?php esc_html_e( 'Test Preview Site', 'wp-pantheon-decoupled' ); ?></h1>
-			<?php
-			echo '<h3>' . esc_html(
-			// Translators: %s is the preview site label.
-				sprintf( __( '%s', 'wp-decoupled-preview' ), $preview_site['label'] )
-			) . "</h3>\n";
-			if ( empty( $body ) ) {
-				// We weren't able to reach the preview endpoint at all.
-				echo "<p>There was an error connecting to the preview site.</p>\n";
-				echo '<p>' . esc_html(
-				// Translators: %s is the response code.
-					sprintf( __( 'Code: %s', 'wp-decoupled-preview' ), $response['response']['code'] )
-				) . "</p>\n";
-				echo '<p>' . esc_html(
-				// Translators: %s is the response message.
-					sprintf( __( 'Message: %s', 'wp-decoupled-preview' ), $response['response']['message'] )
-				) . "</p>\n";
-				echo "<p>Consult the Pantheon Documentation for more information on <a href='https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters/content-preview' target='_blank' rel='noopener noreferrer'>configuring content preview</a>.</p>\n";
-			} elseif ( isset( $body['error'] ) ) {
-				// We were able to reach the preview endpoint, but there was an error.
-				echo '<p>' . esc_html(
-				// Translators: %s is the error.
-					sprintf( __( 'Error: %s', 'wp-decoupled-preview' ), $body['error'] )
-				) . "</p>\n";
-				if ( isset( $body['message'] ) ) {
-					echo '<p>' . esc_html(
-					// Translators: %s is the error message.
-						sprintf( __( 'Message: %s', 'wp-decoupled-preview' ), $body['message'] )
-					) . "</p>\n";
-				}
-				echo "<p>Consult the Pantheon Documentation for more information on <a href='https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters/content-preview' target='_blank' rel='noopener noreferrer'>configuring content preview</a>.</p>\n";
-			} else {
-				// Success!
-				echo "<p>WordPress was able to communicate with your preview site and preview example content.</p>\n";
-				if ( isset( $body['message'] ) ) {
-					echo '<p>' . esc_html(
-					// Translators: %s is the response code.
-						sprintf( __( 'Code: %s', 'wp-decoupled-preview' ), $response['response']['code'] )
-					) . "</p>\n";
-					echo '<p>' . esc_html(
-					// Translators: %s is the error message.
-						sprintf( __( 'Message: %s', 'wp-decoupled-preview' ), $body['message'] )
-					) . "</p>\n";
-				}
-			}
-			?>
-		</div>
+    <style>
+      #TB_window {
+        background-color: rgb(240, 240, 241);
+      }
+      #TB_window #adminmenumain,
+      #TB_window #wpfooter {
+        display: none;
+      }
+      #TB_window #wpcontent {
+        margin-left: 0;
+      }
+    </style>
+    <div class="wrap">
+      <h1><?php esc_html_e( 'Test Preview Site', 'wp-pantheon-decoupled' ); ?></h1>
+      <?php
+      echo '<h3>' . esc_html(
+      // Translators: %s is the preview site label.
+        sprintf( __( '%s', 'wp-decoupled-preview' ), $preview_site['label'] )
+      ) . "</h3>\n";
+      if ( empty( $body ) ) {
+        // We weren't able to reach the preview endpoint at all.
+        echo "<p>There was an error connecting to the preview site.</p>\n";
+        echo '<p>' . esc_html(
+        // Translators: %s is the response code.
+          sprintf( __( 'Code: %s', 'wp-decoupled-preview' ), $response['response']['code'] )
+        ) . "</p>\n";
+        echo '<p>' . esc_html(
+        // Translators: %s is the response message.
+          sprintf( __( 'Message: %s', 'wp-decoupled-preview' ), $response['response']['message'] )
+        ) . "</p>\n";
+        echo "<p>Consult the Pantheon Documentation for more information on <a href='https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters/content-preview' target='_blank' rel='noopener noreferrer'>configuring content preview</a>.</p>\n";
+      } elseif ( isset( $body['error'] ) ) {
+        // We were able to reach the preview endpoint, but there was an error.
+        echo '<p>' . esc_html(
+        // Translators: %s is the error.
+          sprintf( __( 'Error: %s', 'wp-decoupled-preview' ), $body['error'] )
+        ) . "</p>\n";
+        if ( isset( $body['message'] ) ) {
+          echo '<p>' . esc_html(
+          // Translators: %s is the error message.
+            sprintf( __( 'Message: %s', 'wp-decoupled-preview' ), $body['message'] )
+          ) . "</p>\n";
+        }
+        echo "<p>Consult the Pantheon Documentation for more information on <a href='https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters/content-preview' target='_blank' rel='noopener noreferrer'>configuring content preview</a>.</p>\n";
+      } else {
+        // Success!
+        echo "<p>WordPress was able to communicate with your preview site and preview example content.</p>\n";
+        if ( isset( $body['message'] ) ) {
+          echo '<p>' . esc_html(
+          // Translators: %s is the response code.
+            sprintf( __( 'Code: %s', 'wp-decoupled-preview' ), $response['response']['code'] )
+          ) . "</p>\n";
+          echo '<p>' . esc_html(
+          // Translators: %s is the error message.
+            sprintf( __( 'Message: %s', 'wp-decoupled-preview' ), $body['message'] )
+          ) . "</p>\n";
+        }
+      }
+      ?>
+    </div>
 	<?php
 }
 
@@ -391,15 +394,18 @@ function pantheon_decoupled_env_vars() {
 	$home_url = home_url( $wp->request );
 
 	?>
-		<style>
-			/* Hide admin bar and padding on top of page. */
-			html.wp-toolbar {
-			padding-top: 0;
-			}
-			#wpadminbar {
-			display: none;
-			}
-		</style>
+    <style>
+      #TB_window {
+        background-color: rgb(240, 240, 241);
+      }
+      #TB_window #adminmenumain,
+      #TB_window #wpfooter {
+        display: none;
+      }
+      #TB_window #wpcontent {
+        margin-left: 0;
+      }
+    </style>
 		<div class="wrap">
 			<h1><?php esc_html_e( 'Environment Variables', 'wp-pantheon-decoupled' ); ?></h1>
 			<h4>PREVIEW_SECRET</h4>
@@ -498,21 +504,21 @@ function pantheon_decoupled_preview_delete() {
 
 	?>
 		<style>
-	/*
-	Styles here are for ajax version of thickbox. We lose some styles, but gain
-	a loading indicator...
-	*/
-	#TB_window {
-		background-color: rgb(240, 240, 241);
-	}
-	#TB_window #adminmenumain,
-	#TB_window #wpfooter {
-		display: none;
-	}
-	#TB_window #wpcontent {
-		margin-left: 0;
-	}
-	</style>
+      /*
+      Styles here are for ajax version of thickbox. We lose some styles, but gain
+      a loading indicator...
+      */
+      #TB_window {
+        background-color: rgb(240, 240, 241);
+      }
+      #TB_window #adminmenumain,
+      #TB_window #wpfooter {
+        display: none;
+      }
+      #TB_window #wpcontent {
+        margin-left: 0;
+      }
+    </style>
 		<div class="wrap">
 		<h1><?php esc_html_e( 'Delete Preview Site', 'wp-pantheon-decoupled' ); ?></h1>
 		<form action="<?php echo esc_url( $action ); ?>" method="post">
@@ -579,59 +585,51 @@ function pantheon_decoupled_regen_env_vars() {
   $docs_url = 'https://docs.pantheon.io/guides/decoupled/overview'
     
   ?>
-      <style>
-        /* Hide admin bar and padding on top of page. */
-        html.wp-toolbar {
-          padding-top: 0;
-        }
-        #wpadminbar {
-          display: none;
-        }
-      </style>
-      <div class="wrap">
-          <h1><?php esc_html_e( 'Regenerate Environment Variables', 'wp-pantheon-decoupled' ); ?></h1>
-          <?php
-        if ( $id ) {
-          $site_label = $preview_site['label'];
-          $url = wp_nonce_url( add_query_arg( [
-            'page' => 'env_regen_action',
-            'id' => $id,
-          ], admin_url( 'options-general.php' ) ), 'env-regen', 'nonce' );
-          ?>
-          <a id="regen-password" class="button-secondary button-large" href="<?php echo esc_url( $url ); ?>">
-            <?php
-            echo esc_html(
-              // Translators: %s is the preview site label.
-              sprintf( __( 'Regenerate %s WP_APPLICATION_PASSWORD', 'wp-decoupled-preview' ), $site_label )
-            );
-            ?>
-          </a>
-          <p>Checkout the Pantheon
-            <a id="docs-link" target="_blank" href="<?php echo esc_url( $docs_url ); ?>">
-              platform docs
-            </a> for more information about Front-End Site configuration.
-          </p>
-          <?php
+    <style>
+      #TB_window {
+        background-color: rgb(240, 240, 241);
+      }
+      #TB_window #adminmenumain,
+      #TB_window #wpfooter {
+        display: none;
+      }
+      #TB_window #wpcontent {
+        margin-left: 0;
+      }
+    </style>
+    <div class="wrap">
+        <h1><?php esc_html_e( 'Regenerate Environment Variables', 'wp-pantheon-decoupled' ); ?></h1>
+        <?php
+      if ( $id ) {
+        $site_label = $preview_site['label'];
+        $url = wp_nonce_url( add_query_arg( [
+          'page' => 'env_regen_action',
+          'id' => $id,
+        ], admin_url( 'options-general.php' ) ), 'env-regen', 'nonce' );
+
+        if(!$preview_site['associated_user']) {
+          echo '<p>A preview site must have an associated user to generate an application password.';
         }
         ?>
-      </div>
+
+        <a id="regen-password" <?= $preview_site['associated_user'] ? 'class="button-secondary button-large thickbox"' . 'href="' . esc_url( $url ) . '"' : 'class="button-secondary button-large"' .'disabled="true"' ?>>
+          <?php
+          echo esc_html(
+            // Translators: %s is the preview site label.
+            sprintf( __( 'Regenerate %s WP_APPLICATION_PASSWORD', 'wp-decoupled-preview' ), $site_label )
+          );
+          ?>
+        </a>
+        <p>Consult the
+          <a id="docs-link" target="_blank" href="<?php echo esc_url( $docs_url ); ?>">
+            Pantheon Documentation
+          </a> for more information about Front-End Site configuration.
+        </p>
+        <?php
+      }
+      ?>
+    </div>
   <?php
-}
-
-/**
- * Helper to get password by name.
- *
- * @return string
- */
-function pantheon_decoupled_get_user_application_password( $user_id, $id ) {
-	$passwords = WP_Application_Passwords::get_user_application_passwords( $user_id );
-
-	foreach ( $passwords as $password ) {
-		if ( $password['name'] === strval($id)) {
-			return $password;
-		}
-	}
-	return null;
 }
 
 function pantheon_decoupled_regen_env_vars_action() {
@@ -640,50 +638,46 @@ function pantheon_decoupled_regen_env_vars_action() {
   }
   check_admin_referer( 'env-regen', 'nonce' );
   $id = isset( $_GET['id'] ) ? absint( sanitize_text_field( $_GET['id'] ) ) : NULL;
-  $user_id = get_current_user_id();
-  // If a password exists for this preview site and user, delete it so that a new one can be generated
-  if(WP_Application_Passwords::application_name_exists_for_user($user_id, $id)) {
-    $currentPassword = pantheon_decoupled_get_user_application_password( $user_id, $id );
-    WP_Application_Passwords::delete_application_password($user_id, $currentPassword['uuid']);
-  }
-  $app_password = WP_Application_Passwords::create_new_application_password($user_id, array( 'name' => $id ));
-
   $preview_sites = get_option( 'preview_sites' );
   $preview_site = isset( $preview_sites['preview'][ $id ] ) ? $preview_sites['preview'][ $id ] : NULL;
+
+  $app_password = WP_Application_Passwords::create_new_application_password(get_user_by('login', $preview_site['associated_user'])->ID, array( 'name' => wp_generate_uuid4() ));
+
   $site_label = $preview_site['label'];
-  
+  $docs_url = 'https://docs.pantheon.io/guides/decoupled/overview'
+
   ?>
-      <style>
-        /* Hide admin bar and padding on top of page. */
-        html.wp-toolbar {
-          padding-top: 0;
-        }
-        #wpadminbar {
-          display: none;
-        }
-        input {
-          width: 300px;
-        }
-      </style>
-      <div class="wrap">
-          <h1><?php esc_html_e( 'Regenerate Environment Variables', 'wp-pantheon-decoupled' ); ?></h1>
-          <p>
-            <label for="new-application-password-value">
-              The password of the <strong> <?php
-              echo esc_html(
-                // Translators: %s is the preview site label.
-                sprintf( __( '%s', 'wp-decoupled-preview' ), $site_label )
-              );
-              ?></strong> site is:
-            </label>
-          </p>
-          <input type="text" class="code" value="<?php printf(esc_attr( WP_Application_Passwords::chunk_password($app_password[0]))); ?>" />
-          <p>Checkout the Pantheon
-            <a id="docs-link" target="_blank" href="<?php echo esc_url( $docs_url ); ?>">
-              platform docs
-            </a> for more information about Front-End Site configuration.
-          </p>
-      </div>
+    <style>
+      #TB_window {
+        background-color: rgb(240, 240, 241);
+      }
+      #TB_window #adminmenumain,
+      #TB_window #wpfooter {
+        display: none;
+      }
+      #TB_window #wpcontent {
+        margin-left: 0;
+      }
+    </style>
+    <div class="wrap">
+        <h1><?php esc_html_e( 'Regenerate Environment Variables', 'wp-pantheon-decoupled' ); ?></h1>
+        <p>
+          <label for="new-application-password-value">
+            The password of the <strong> <?php
+            echo esc_html(
+              // Translators: %s is the preview site label.
+              sprintf( __( '%s', 'wp-decoupled-preview' ), $site_label )
+            );
+            ?></strong> site is:
+          </label>
+        </p>
+        <input type="text" class="code" value="<?php printf(esc_attr( WP_Application_Passwords::chunk_password($app_password[0]))); ?>" />
+        <p>Consult the
+          <a id="docs-link" target="_blank" href="<?php echo esc_url( $docs_url ); ?>">
+            Pantheon Documentation
+          </a> for more information about Front-End Site configuration.
+        </p>
+    </div>
   <?php
 }
 
