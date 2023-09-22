@@ -134,6 +134,17 @@ function pantheon_decoupled_settings_init() {
 }
 
 /**
+ * Removes Preview Sites from settings menu since the the Front-End Sites
+ * settings page includes equivalent functionality.
+ * It will still be possible to access the settings page directly.
+ *
+ * @return void
+ */
+function remove_preview_sites_submenu() {
+	remove_submenu_page( 'options-general.php', 'preview_sites' );
+}
+
+/**
  * Render markup for front-end sites settings page
  *
  * @return void
@@ -311,66 +322,69 @@ function pantheon_decoupled_test_preview_page() {
 	$body     = json_decode( wp_remote_retrieve_body( $response ), true );
   // phpcs:disable WordPressVIPMinimum.UserExperience.AdminBarRemoval.HidingDetected
 	?>
-    <style>
-      #TB_window {
-        background-color: rgb(240, 240, 241);
-      }
-      #TB_window #adminmenumain,
-      #TB_window #wpfooter {
-        display: none;
-      }
-      #TB_window #wpcontent {
-        margin-left: 0;
-      }
-    </style>
-    <div class="wrap">
-      <h1><?php esc_html_e( 'Test Preview Site', 'wp-pantheon-decoupled' ); ?></h1>
-      <?php
-      echo '<h3>' . esc_html(
-      // Translators: %s is the preview site label.
-        sprintf( __( '%s', 'wp-decoupled-preview' ), $preview_site['label'] )
-      ) . "</h3>\n";
-      if ( empty( $body ) ) {
-        // We weren't able to reach the preview endpoint at all.
-        echo "<p>There was an error connecting to the preview site.</p>\n";
-        echo '<p>' . esc_html(
-        // Translators: %s is the response code.
-          sprintf( __( 'Code: %s', 'wp-decoupled-preview' ), $response['response']['code'] )
-        ) . "</p>\n";
-        echo '<p>' . esc_html(
-        // Translators: %s is the response message.
-          sprintf( __( 'Message: %s', 'wp-decoupled-preview' ), $response['response']['message'] )
-        ) . "</p>\n";
-        echo "<p>Consult the Pantheon Documentation for more information on <a href='https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters/content-preview' target='_blank' rel='noopener noreferrer'>configuring content preview</a>.</p>\n";
-      } elseif ( isset( $body['error'] ) ) {
-        // We were able to reach the preview endpoint, but there was an error.
-        echo '<p>' . esc_html(
-        // Translators: %s is the error.
-          sprintf( __( 'Error: %s', 'wp-decoupled-preview' ), $body['error'] )
-        ) . "</p>\n";
-        if ( isset( $body['message'] ) ) {
-          echo '<p>' . esc_html(
-          // Translators: %s is the error message.
-            sprintf( __( 'Message: %s', 'wp-decoupled-preview' ), $body['message'] )
-          ) . "</p>\n";
-        }
-        echo "<p>Consult the Pantheon Documentation for more information on <a href='https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters/content-preview' target='_blank' rel='noopener noreferrer'>configuring content preview</a>.</p>\n";
-      } else {
-        // Success!
-        echo "<p>WordPress was able to communicate with your preview site and preview example content.</p>\n";
-        if ( isset( $body['message'] ) ) {
-          echo '<p>' . esc_html(
-          // Translators: %s is the response code.
-            sprintf( __( 'Code: %s', 'wp-decoupled-preview' ), $response['response']['code'] )
-          ) . "</p>\n";
-          echo '<p>' . esc_html(
-          // Translators: %s is the error message.
-            sprintf( __( 'Message: %s', 'wp-decoupled-preview' ), $body['message'] )
-          ) . "</p>\n";
-        }
-      }
-      ?>
-    </div>
+<style>
+	/*
+	Tweak styles for ajax version of thickbox.
+	*/
+	#TB_window {
+		background-color: rgb(240, 240, 241);
+	}
+	#TB_window #adminmenumain,
+	#TB_window #wpfooter {
+		display: none;
+	}
+	#TB_window #wpcontent {
+		margin-left: 0;
+	}
+	</style>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Test Preview Site', 'wp-pantheon-decoupled' ); ?></h1>
+			<?php
+			echo '<h3>' . esc_html(
+			// Translators: %s is the preview site label.
+				sprintf( __( '%s', 'wp-decoupled-preview' ), $preview_site['label'] )
+			) . "</h3>\n";
+			if ( empty( $body ) ) {
+				// We weren't able to reach the preview endpoint at all.
+				echo "<p>There was an error connecting to the preview site.</p>\n";
+				echo '<p>' . esc_html(
+				// Translators: %s is the response code.
+					sprintf( __( 'Code: %s', 'wp-decoupled-preview' ), $response['response']['code'] )
+				) . "</p>\n";
+				echo '<p>' . esc_html(
+				// Translators: %s is the response message.
+					sprintf( __( 'Message: %s', 'wp-decoupled-preview' ), $response['response']['message'] )
+				) . "</p>\n";
+				echo "<p>Consult the Pantheon Documentation for more information on <a href='https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters/content-preview' target='_blank' rel='noopener noreferrer'>configuring content preview</a>.</p>\n";
+			} elseif ( isset( $body['error'] ) ) {
+				// We were able to reach the preview endpoint, but there was an error.
+				echo '<p>' . esc_html(
+				// Translators: %s is the error.
+					sprintf( __( 'Error: %s', 'wp-decoupled-preview' ), $body['error'] )
+				) . "</p>\n";
+				if ( isset( $body['message'] ) ) {
+					echo '<p>' . esc_html(
+					// Translators: %s is the error message.
+						sprintf( __( 'Message: %s', 'wp-decoupled-preview' ), $body['message'] )
+					) . "</p>\n";
+				}
+				echo "<p>Consult the Pantheon Documentation for more information on <a href='https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters/content-preview' target='_blank' rel='noopener noreferrer'>configuring content preview</a>.</p>\n";
+			} else {
+				// Success!
+				echo "<p>WordPress was able to communicate with your preview site and preview example content.</p>\n";
+				if ( isset( $body['message'] ) ) {
+					echo '<p>' . esc_html(
+					// Translators: %s is the response code.
+						sprintf( __( 'Code: %s', 'wp-decoupled-preview' ), $response['response']['code'] )
+					) . "</p>\n";
+					echo '<p>' . esc_html(
+					// Translators: %s is the error message.
+						sprintf( __( 'Message: %s', 'wp-decoupled-preview' ), $body['message'] )
+					) . "</p>\n";
+				}
+			}
+			?>
+		</div>
 	<?php
 }
 
@@ -394,18 +408,21 @@ function pantheon_decoupled_env_vars() {
 	$home_url = home_url( $wp->request );
 
 	?>
-    <style>
-      #TB_window {
-        background-color: rgb(240, 240, 241);
-      }
-      #TB_window #adminmenumain,
-      #TB_window #wpfooter {
-        display: none;
-      }
-      #TB_window #wpcontent {
-        margin-left: 0;
-      }
-    </style>
+<style>
+	/*
+	Tweak styles for ajax version of thickbox.
+	*/
+	#TB_window {
+		background-color: rgb(240, 240, 241);
+	}
+	#TB_window #adminmenumain,
+	#TB_window #wpfooter {
+		display: none;
+	}
+	#TB_window #wpcontent {
+		margin-left: 0;
+	}
+	</style>
 		<div class="wrap">
 			<h1><?php esc_html_e( 'Environment Variables', 'wp-pantheon-decoupled' ); ?></h1>
 			<h4>PREVIEW_SECRET</h4>
@@ -685,3 +702,4 @@ add_action( 'admin_notices', 'pantheon_decoupled_admin_notice' );
 add_action( 'init', 'pantheon_decoupled_enable_deps' );
 add_action( 'admin_menu', 'pantheon_decoupled_settings_init' );
 add_action( 'update_option_preview_sites', 'pantheon_decoupled_redirect_to_fes' );
+add_action( 'admin_menu', 'remove_preview_sites_submenu', 999 );
