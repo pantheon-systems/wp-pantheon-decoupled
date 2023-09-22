@@ -292,15 +292,21 @@ function pantheon_decoupled_test_preview_page() {
 	$body     = json_decode( wp_remote_retrieve_body( $response ), true );
   // phpcs:disable WordPressVIPMinimum.UserExperience.AdminBarRemoval.HidingDetected
 	?>
-		<style>
-		/* Hide admin bar and padding on top of page. */
-		html.wp-toolbar {
-			padding-top: 0;
-		}
-	#wpadminbar {
-			display: none;
-		}
-		</style>
+<style>
+	/*
+	Tweak styles for ajax version of thickbox.
+	*/
+	#TB_window {
+		background-color: rgb(240, 240, 241);
+	}
+	#TB_window #adminmenumain,
+	#TB_window #wpfooter {
+		display: none;
+	}
+	#TB_window #wpcontent {
+		margin-left: 0;
+	}
+	</style>
 		<div class="wrap">
 			<h1><?php esc_html_e( 'Test Preview Site', 'wp-pantheon-decoupled' ); ?></h1>
 			<?php
@@ -372,15 +378,21 @@ function pantheon_decoupled_env_vars() {
 	$home_url = home_url( $wp->request );
 
 	?>
-		<style>
-			/* Hide admin bar and padding on top of page. */
-			html.wp-toolbar {
-			padding-top: 0;
-			}
-			#wpadminbar {
-			display: none;
-			}
-		</style>
+<style>
+	/*
+	Tweak styles for ajax version of thickbox.
+	*/
+	#TB_window {
+		background-color: rgb(240, 240, 241);
+	}
+	#TB_window #adminmenumain,
+	#TB_window #wpfooter {
+		display: none;
+	}
+	#TB_window #wpcontent {
+		margin-left: 0;
+	}
+	</style>
 		<div class="wrap">
 			<h1><?php esc_html_e( 'Environment Variables', 'wp-pantheon-decoupled' ); ?></h1>
 			<h4>PREVIEW_SECRET</h4>
