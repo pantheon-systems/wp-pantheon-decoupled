@@ -60,7 +60,7 @@ class FES_Preview_Table extends List_Table {
 						'action' => 'regen',
 						'id' => $item['id'],
 					], admin_url( 'options-general.php' ) ), 'env-regen', 'nonce' ),
-					esc_html__( 'Regenerate Variables', 'wp-decoupled-preview' ),
+					esc_html__( 'Regenerate Variables', 'wp-decoupled-preview' )
 				);
 			default:
 				return '';
