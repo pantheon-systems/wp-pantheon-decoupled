@@ -610,7 +610,7 @@ function pantheon_decoupled_regen_env_vars() {
 	$preview_sites = get_option( 'preview_sites' );
 	$preview_site = isset( $preview_sites['preview'][ $id ] ) ? $preview_sites['preview'][ $id ] : null;
 
-	$docs_url = 'https://docs.pantheon.io/guides/decoupled/overview'
+	$docs_url = 'https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters/content-preview'
 
 	?>
 	<style>
@@ -645,10 +645,9 @@ function pantheon_decoupled_regen_env_vars() {
 			);
 			?>
 		</a>
-		<p>Consult the
-			<a id="docs-link" target="_blank" href="<?php echo esc_url( $docs_url ); ?>">
-			Pantheon Documentation
-			</a> for more information about Front-End Site configuration.
+		<p>Consult the Pantheon Documentation for more information on
+			<a id="docs-link" target="_blank" rel='noopener noreferrer' href="<?php echo esc_url( $docs_url ); ?>">
+		configuring content preview</a>.
 		</p>
 			<?php
 		}
@@ -674,7 +673,7 @@ function pantheon_decoupled_regen_env_vars_action() {
 	$app_password = WP_Application_Passwords::create_new_application_password( get_user_by( 'login', $preview_site['associated_user'] )->ID, [ 'name' => 'preview-' . wp_generate_uuid4() ] );
 
 	$site_label = $preview_site['label'];
-	$docs_url = 'https://docs.pantheon.io/guides/decoupled/overview'
+	$docs_url = 'https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters/content-preview'
 
 	?>
 	<style>
@@ -701,10 +700,10 @@ function pantheon_decoupled_regen_env_vars_action() {
 			</label>
 		</p>
 		<input type="text" class="code" size="30" value="<?php printf( esc_attr( WP_Application_Passwords::chunk_password( $app_password[0] ) ) ); ?>" />
-		<p>Consult the
-			<a id="docs-link" target="_blank" href="<?php echo esc_url( $docs_url ); ?>">
-			Pantheon Documentation
-			</a> for more information about Front-End Site configuration.
+		<p>Consult the Pantheon Documentation for more information on
+			<a id="docs-link" target="_blank" rel='noopener noreferrer' href="<?php echo esc_url( $docs_url ); ?>">
+		configuring content preview</a>.
+		</p>
 		</p>
 	</div>
 	<?php
