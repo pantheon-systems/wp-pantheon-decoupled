@@ -324,7 +324,7 @@ function pantheon_decoupled_test_preview_page() {
 
 	// Make test API call.
 	$test_url = $preview_site['url'] . '?secret=' . $preview_site['secret_string'] . '&uri=' . $post->post_name . '&id=' . $post->ID . '&content_type=' . $post_type . '&test=true';
-	$response = wp_remote_get( $test_url );
+	$response = wp_http_validate_url( $test_url ) ? $response = wp_remote_get( $test_url ) : null;
 	$body     = json_decode( wp_remote_retrieve_body( $response ), true );
   // phpcs:disable WordPressVIPMinimum.UserExperience.AdminBarRemoval.HidingDetected
 	?>
@@ -352,15 +352,17 @@ function pantheon_decoupled_test_preview_page() {
 			) . "</h3>\n";
 			if ( empty( $body ) ) {
 				// We weren't able to reach the preview endpoint at all.
-				echo "<p>There was an error connecting to the preview site.</p>\n";
-				echo '<p>' . esc_html(
-				// Translators: %s is the response code.
-					sprintf( __( 'Code: %s', 'wp-decoupled-preview' ), $response['response']['code'] )
-				) . "</p>\n";
-				echo '<p>' . esc_html(
-				// Translators: %s is the response message.
-					sprintf( __( 'Message: %s', 'wp-decoupled-preview' ), $response['response']['message'] )
-				) . "</p>\n";
+				echo "<p>There was an error connecting to the preview site. Please confirm that the URL is a valid preview API endpoint.</p>\n";
+				if ( ! empty( $response ) ) {
+					echo '<p>' . esc_html(
+					// Translators: %s is the response code.
+						sprintf( __( 'Code: %s', 'wp-decoupled-preview' ), $response['response']['code'] )
+					) . "</p>\n";
+					echo '<p>' . esc_html(
+					// Translators: %s is the response message.
+						sprintf( __( 'Message: %s', 'wp-decoupled-preview' ), $response['response']['message'] )
+					) . "</p>\n";
+				}
 				echo "<p>Consult the Pantheon Documentation for more information on <a href='https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters/content-preview' target='_blank' rel='noopener noreferrer'>configuring content preview</a>.</p>\n";
 			} elseif ( isset( $body['error'] ) ) {
 				// We were able to reach the preview endpoint, but there was an error.
