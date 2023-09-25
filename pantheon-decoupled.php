@@ -603,17 +603,14 @@ function pantheon_decoupled_regen_env_vars() {
     
   ?>
     <style>
-      #TB_window {
-        background-color: rgb(240, 240, 241);
-      }
-      #TB_window #adminmenumain,
-      #TB_window #wpfooter {
-        display: none;
-      }
-      #TB_window #wpcontent {
-        margin-left: 0;
-      }
-    </style>
+		/* Hide admin bar and padding on top of page. */
+		html.wp-toolbar {
+			padding-top: 0;
+		}
+		#wpadminbar {
+			display: none;
+		}
+	</style>
     <div class="wrap">
         <h1><?php esc_html_e( 'Regenerate Environment Variables', 'wp-pantheon-decoupled' ); ?></h1>
         <?php
@@ -629,7 +626,7 @@ function pantheon_decoupled_regen_env_vars() {
         }
         ?>
 
-        <a id="regen-password" <?= $preview_site['associated_user'] ? 'class="button-secondary button-large thickbox"' . 'href="' . esc_url( $url ) . '"' : 'class="button-secondary button-large"' .'disabled="true"' ?>>
+        <a id="regen-password" <?= $preview_site['associated_user'] ? 'class="button-secondary button-large thickbox"' . 'href="' . esc_url( $url ) . '&TB_iframe=true&width=600&height=500"' : 'class="button-secondary button-large"' .'disabled="true"' ?>>
           <?php
           echo esc_html(
             // Translators: %s is the preview site label.
@@ -665,17 +662,14 @@ function pantheon_decoupled_regen_env_vars_action() {
 
   ?>
     <style>
-      #TB_window {
-        background-color: rgb(240, 240, 241);
-      }
-      #TB_window #adminmenumain,
-      #TB_window #wpfooter {
-        display: none;
-      }
-      #TB_window #wpcontent {
-        margin-left: 0;
-      }
-    </style>
+		/* Hide admin bar and padding on top of page. */
+		html.wp-toolbar {
+			padding-top: 0;
+		}
+		#wpadminbar {
+			display: none;
+		}
+	</style>
     <div class="wrap">
         <h1><?php esc_html_e( 'Regenerate Environment Variables', 'wp-pantheon-decoupled' ); ?></h1>
         <p>
