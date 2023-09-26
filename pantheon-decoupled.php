@@ -60,7 +60,13 @@ function pantheon_decoupled_graphql_smart_object_cache() {
  * @return void
  */
 function pantheon_decoupled_settings_init() {
-	add_options_page( 'Pantheon Front-End Sites', 'Pantheon Front-End Sites', 'manage_options', 'pantheon-front-end-sites', 'pantheon_decoupled_settings_page' );
+	add_options_page(
+		'Pantheon Front-End Sites',
+		'Pantheon Front-End Sites',
+		'manage_options',
+		'pantheon-front-end-sites',
+		'pantheon_decoupled_settings_page'
+	);
 	add_submenu_page(
 		null,
 		'',
@@ -78,6 +84,25 @@ function pantheon_decoupled_settings_init() {
 		'env_vars',
 		'pantheon_decoupled_env_vars'
 	);
+
+	add_submenu_page(
+		null,
+		'',
+		'',
+		'manage_options',
+		'env_regen',
+		'pantheon_decoupled_regen_env_vars'
+	);
+
+	add_submenu_page(
+		null,
+		'',
+		'',
+		'manage_options',
+		'env_regen_action',
+		'pantheon_decoupled_regen_env_vars_action'
+	);
+
 
 	add_submenu_page(
 		null,
@@ -240,32 +265,32 @@ function pantheon_decoupled_create_html() {
 	}
 	?>
 	<style>
-	/*
-	Styles here are for ajax version of thickbox. We lose some styles, but gain
-	a loading indicator...
-	*/
-	#TB_window {
+		/*
+		Styles here are for ajax version of thickbox. We lose some styles, but gain
+		a loading indicator...
+	 */
+		#TB_window {
 		background-color: rgb(240, 240, 241);
-	}
-	#TB_window #adminmenumain,
-	#TB_window #wpfooter {
+		}
+		#TB_window #adminmenumain,
+		#TB_window #wpfooter {
 		display: none;
-	}
-	#TB_window #wpcontent {
+		}
+		#TB_window #wpcontent {
 		margin-left: 0;
-	}
+		}
 	</style>
 	<div class="wrap">
-				<h1><?php esc_html_e( 'Create or Edit Preview Site', 'wp-decoupled-preview' ); ?></h1>
-				<form action="<?php echo esc_url( $action ); ?>" method="post">
-					<?php
-					settings_fields( 'wp-decoupled-preview' );
-					do_settings_sections( 'preview_sites' );
-					?>
-					<?php wp_nonce_field( 'edit-preview-site', 'nonce' ); ?>
-					<?php submit_button(); ?>
-				</form>
-			</div>
+		<h1><?php esc_html_e( 'Create or Edit Preview Site', 'wp-decoupled-preview' ); ?></h1>
+		<form action="<?php echo esc_url( $action ); ?>" method="post">
+		<?php
+		settings_fields( 'wp-decoupled-preview' );
+		do_settings_sections( 'preview_sites' );
+		?>
+		<?php wp_nonce_field( 'edit-preview-site', 'nonce' ); ?>
+		<?php submit_button(); ?>
+		</form>
+		</div>
 	<?php
 }
 
@@ -299,7 +324,7 @@ function pantheon_decoupled_test_preview_page() {
 
 	// Make test API call.
 	$test_url = $preview_site['url'] . '?secret=' . $preview_site['secret_string'] . '&uri=' . $post->post_name . '&id=' . $post->ID . '&content_type=' . $post_type . '&test=true';
-	$response = wp_remote_get( $test_url );
+	$response = wp_http_validate_url( $test_url ) ? $response = wp_remote_get( $test_url ) : null;
 	$body     = json_decode( wp_remote_retrieve_body( $response ), true );
   // phpcs:disable WordPressVIPMinimum.UserExperience.AdminBarRemoval.HidingDetected
 	?>
@@ -327,15 +352,17 @@ function pantheon_decoupled_test_preview_page() {
 			) . "</h3>\n";
 			if ( empty( $body ) ) {
 				// We weren't able to reach the preview endpoint at all.
-				echo "<p>There was an error connecting to the preview site.</p>\n";
-				echo '<p>' . esc_html(
-				// Translators: %s is the response code.
-					sprintf( __( 'Code: %s', 'wp-decoupled-preview' ), $response['response']['code'] )
-				) . "</p>\n";
-				echo '<p>' . esc_html(
-				// Translators: %s is the response message.
-					sprintf( __( 'Message: %s', 'wp-decoupled-preview' ), $response['response']['message'] )
-				) . "</p>\n";
+				echo "<p>There was an error connecting to the preview site. Please confirm that the URL is a valid preview API endpoint.</p>\n";
+				if ( ! empty( $response ) ) {
+					echo '<p>' . esc_html(
+					// Translators: %s is the response code.
+						sprintf( __( 'Code: %s', 'wp-decoupled-preview' ), $response['response']['code'] )
+					) . "</p>\n";
+					echo '<p>' . esc_html(
+					// Translators: %s is the response message.
+						sprintf( __( 'Message: %s', 'wp-decoupled-preview' ), $response['response']['message'] )
+					) . "</p>\n";
+				}
 				echo "<p>Consult the Pantheon Documentation for more information on <a href='https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters/content-preview' target='_blank' rel='noopener noreferrer'>configuring content preview</a>.</p>\n";
 			} elseif ( isset( $body['error'] ) ) {
 				// We were able to reach the preview endpoint, but there was an error.
@@ -502,20 +529,20 @@ function pantheon_decoupled_preview_delete() {
 
 	?>
 		<style>
-	/*
-	Styles here are for ajax version of thickbox. We lose some styles, but gain
-	a loading indicator...
-	*/
-	#TB_window {
+		/*
+		Styles here are for ajax version of thickbox. We lose some styles, but gain
+		a loading indicator...
+	 */
+		#TB_window {
 		background-color: rgb(240, 240, 241);
-	}
-	#TB_window #adminmenumain,
-	#TB_window #wpfooter {
+		}
+		#TB_window #adminmenumain,
+		#TB_window #wpfooter {
 		display: none;
-	}
-	#TB_window #wpcontent {
+		}
+		#TB_window #wpcontent {
 		margin-left: 0;
-	}
+		}
 	</style>
 		<div class="wrap">
 		<h1><?php esc_html_e( 'Delete Preview Site', 'wp-pantheon-decoupled' ); ?></h1>
@@ -567,6 +594,121 @@ function pantheon_decoupled_delete_success() {
 	}
 	$wp_preview_delete = new Decoupled_Preview_Settings();
 	$wp_preview_delete->delete_preview_site( $delete_id );
+}
+
+/**
+ * Form to regenerate environment variables.
+ *
+ * @return void
+ */
+function pantheon_decoupled_regen_env_vars() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-decoupled-preview' ) );
+	}
+	check_admin_referer( 'env-regen', 'nonce' );
+
+	// Get data for preview site.
+	$id = isset( $_GET['id'] ) ? absint( sanitize_text_field( $_GET['id'] ) ) : null;
+	$preview_sites = get_option( 'preview_sites' );
+	$preview_site = isset( $preview_sites['preview'][ $id ] ) ? $preview_sites['preview'][ $id ] : null;
+
+	$docs_url = 'https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters/content-preview'
+
+	?>
+	<style>
+		/* Hide admin bar and padding on top of page. */
+		html.wp-toolbar {
+			padding-top: 0;
+		}
+		#wpadminbar {
+			display: none;
+		}
+	</style>
+	<div class="wrap">
+		<h1><?php esc_html_e( 'Regenerate Environment Variables', 'wp-pantheon-decoupled' ); ?></h1>
+		<?php
+		if ( $id ) {
+			$site_label = $preview_site['label'];
+			$url = wp_nonce_url( add_query_arg( [
+				'page' => 'env_regen_action',
+				'id' => $id,
+			], admin_url( 'options-general.php' ) ), 'env-regen', 'nonce' );
+
+			if ( ! $preview_site['associated_user'] ) {
+				echo '<p>A preview site must have an associated user to generate an application password.';
+			}
+			?>
+
+		<a id="regen-password" <?php echo $preview_site['associated_user'] ? 'class="button-secondary button-large thickbox" href="' . esc_url( $url ) . '&TB_iframe=true&width=600&height=500"' : 'class="button-secondary button-large" disabled="true"'; ?>>
+			<?php
+			echo esc_html(
+			// Translators: %s is the preview site label.
+				sprintf( __( 'Regenerate %s WP_APPLICATION_PASSWORD', 'wp-decoupled-preview' ), $site_label )
+			);
+			?>
+		</a>
+		<p>Consult the Pantheon Documentation for more information on
+			<a id="docs-link" target="_blank" rel='noopener noreferrer' href="<?php echo esc_url( $docs_url ); ?>">
+		configuring content preview</a>.
+		</p>
+			<?php
+		}
+		?>
+	</div>
+	<?php
+}
+
+/**
+ * Form that displays results of regenerated environment variables.
+ *
+ * @return void
+ */
+function pantheon_decoupled_regen_env_vars_action() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-decoupled-preview' ) );
+	}
+	check_admin_referer( 'env-regen', 'nonce' );
+	$id = isset( $_GET['id'] ) ? absint( sanitize_text_field( $_GET['id'] ) ) : null;
+	$preview_sites = get_option( 'preview_sites' );
+	$preview_site = isset( $preview_sites['preview'][ $id ] ) ? $preview_sites['preview'][ $id ] : null;
+
+	$app_password = WP_Application_Passwords::create_new_application_password( get_user_by( 'login', $preview_site['associated_user'] )->ID, [ 'name' => 'preview-' . wp_generate_uuid4() ] );
+
+	$site_label = $preview_site['label'];
+	$docs_url = 'https://docs.pantheon.io/guides/decoupled/wp-nextjs-frontend-starters/content-preview'
+
+	?>
+	<style>
+		/* Hide admin bar and padding on top of page. */
+		html.wp-toolbar {
+			padding-top: 0;
+		}
+		#wpadminbar {
+			display: none;
+		}
+	</style>
+	<div class="wrap">
+		<h1><?php esc_html_e( 'Regenerate Environment Variables', 'wp-pantheon-decoupled' ); ?></h1>
+		<p>
+			<label for="new-application-password-value">
+			The password of the <strong>
+			<?php
+			echo esc_html(
+				// Translators: %s is the preview site label.
+				sprintf( __( '%s', 'wp-decoupled-preview' ), $site_label )
+			);
+			?>
+			</strong> site is:
+			</label>
+		</p>
+		<input type="text" class="code" size="30" value="<?php printf( esc_attr( WP_Application_Passwords::chunk_password( $app_password[0] ) ) ); ?>" />
+		<p>Consult the Pantheon Documentation for more information on
+			<a id="docs-link" target="_blank" rel='noopener noreferrer' href="<?php echo esc_url( $docs_url ); ?>">
+		configuring content preview</a>.
+		</p>
+		</p>
+	</div>
+	<?php
 }
 
 add_action( 'admin_notices', 'pantheon_decoupled_admin_notice' );
